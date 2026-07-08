@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liga Lavida | Luxury Pool Lounge & Bar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+ 
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    h1, h2, h3, .display { font-family: 'Cormorant Garamond', Georgia, serif; }
+ 
+    .hero-bg {
+      background-image: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.75)),
+                        url('images/hero-night.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+ 
+    .parallax-quote {
+      background-image: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)),
+                        url('images/hero-night.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+ 
+    /* Bouncing scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+    }
+    .scroll-indicator:hover { opacity: 1; }
+    .scroll-indicator span {
+      display: block;
+      width: 12px;
+      height: 12px;
+      border-right: 2px solid #d4af37;
+      border-bottom: 2px solid #d4af37;
+      transform: rotate(45deg);
+      animation: bounce-chevron 1.4s ease-in-out infinite;
+    }
+    .scroll-indicator span:nth-child(2) { animation-delay: 0.2s; opacity: 0.6; }
+    .scroll-indicator span:nth-child(3) { animation-delay: 0.4s; opacity: 0.3; }
+    @keyframes bounce-chevron {
+      0%, 100% { transform: rotate(45deg) translateY(0); }
+      50%       { transform: rotate(45deg) translateY(6px); }
+    }
+ 
+    .gold { color: #C9A84C; }
+    .bg-gold { background-color: #C9A84C; }
+    .border-gold { border-color: #C9A84C; }
+ 
+    /* Fade-in animations */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease-out;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+ 
+    /* Mobile Menu */
+    .mobile-menu {
+      transform: translateY(-100%);
+      transition: transform 0.4s ease-in-out;
+    }
+    .mobile-menu.open {
+      transform: translateY(0);
+    }
+ 
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 200;
+      overflow-y: auto;
+      padding: 2rem 1rem;
+    }
+    .modal-overlay.open {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+ 
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(120px);
+      background: #16a34a;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 9999px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      z-index: 999;
+      transition: transform 0.4s ease;
+      white-space: nowrap;
+    }
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+    #toast.error {
+      background: #dc2626;
+    }
+ 
+    /* Scroll to top */
+    #scrollTop {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #d4af37;
+      color: black;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      box-shadow: 0 4px 20px rgba(212,175,55,0.4);
+    }
+    #scrollTop.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+ 
+    /* Gallery slideshow */
+    .gallery-shell {
+      position: relative;
+    }
+    .gallery-stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      min-height: 420px;
+      overflow: hidden;
+      border-radius: 1.75rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #060606;
+      box-shadow: 0 28px 80px rgba(0,0,0,0.45);
+    }
+    .gallery-track {
+      position: absolute;
+      inset: 0;
+    }
+    .gallery-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      z-index: 1;
+      transition: opacity 1.05s cubic-bezier(.4, 0, .2, 1);
+      pointer-events: none;
+    }
+    .gallery-slide.active {
+      opacity: 1;
+      z-index: 2;
+      pointer-events: auto;
+    }
+    .gallery-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transform: scale(1.08);
+      transition: transform 7s linear;
+    }
+    .gallery-slide.active img {
+      transform: scale(1);
+    }
+    .gallery-slide::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.12) 38%, rgba(0,0,0,0) 74%);
+      pointer-events: none;
+    }
+    .gallery-caption {
+      position: absolute;
+      left: 1.5rem;
+      right: 1.5rem;
+      bottom: 5rem;
+      z-index: 5;
+      max-width: min(32rem, calc(100% - 3rem));
+      color: white;
+    }
+    .gallery-caption .eyebrow {
+      display: block;
+      font-size: 0.7rem;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: #C9A84C;
+      margin-bottom: 0.6rem;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
+    }
+    .gallery-caption h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1.6rem, 3.4vw, 2.8rem);
+      font-weight: 600;
+      line-height: 1.12;
+      margin: 0;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.7s ease 0.35s, transform 0.7s ease 0.35s;
+    }
+    .gallery-caption p {
+      margin-top: 0.75rem;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.82);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.7s ease 0.45s, transform 0.7s ease 0.45s;
+    }
+    .gallery-slide.active .gallery-caption .eyebrow,
+    .gallery-slide.active .gallery-caption h3,
+    .gallery-slide.active .gallery-caption p {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .gallery-counter {
+      position: absolute;
+      top: 1.1rem;
+      right: 1.1rem;
+      z-index: 6;
+      font-size: 0.8rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.68);
+      font-variant-numeric: tabular-nums;
+    }
+    .gallery-counter b {
+      color: white;
+      font-weight: 600;
+    }
+    .gallery-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(8px);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.25s ease, background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+      z-index: 6;
+    }
+    .gallery-stage:hover .gallery-nav {
+      opacity: 1;
+    }
+    .gallery-nav:hover {
+      background: rgba(201,168,76,0.18);
+      border-color: #C9A84C;
+      transform: translateY(-50%) scale(1.05);
+    }
+    .gallery-nav.prev { left: 1rem; }
+    .gallery-nav.next { right: 1rem; }
+    .gallery-indicators {
+      position: absolute;
+      left: 1.5rem;
+      right: 1.5rem;
+      bottom: 1rem;
+      z-index: 6;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .gallery-indicator {
+      position: relative;
+      flex: 1;
+      height: 2px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .gallery-indicator .fill {
+      position: absolute;
+      inset: 0;
+      width: 0%;
+      background: #C9A84C;
+      border-radius: 999px;
+    }
+    .gallery-indicator.done .fill {
+      width: 100%;
+      background: rgba(255,255,255,0.35);
+    }
+    .gallery-indicator.active .fill {
+      width: 0%;
+      animation: galleryFill linear forwards;
+    }
+    @keyframes galleryFill {
+      to { width: 100%; }
+    }
+
+    @media (max-width: 640px) {
+      .gallery-stage {
+        min-height: 380px;
+        aspect-ratio: 4 / 5;
+      }
+      .gallery-caption {
+        left: 1rem;
+        right: 1rem;
+        bottom: 3.5rem;
+        max-width: none;
+      }
+      .gallery-indicators {
+        left: 1rem;
+        right: 1rem;
+        bottom: 0.75rem;
+      }
+      .gallery-nav {
+        opacity: 1;
+        width: 2.35rem;
+        height: 2.35rem;
+      }
+      .gallery-counter {
+        top: 0.9rem;
+        right: 0.9rem;
+        font-size: 0.7rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .gallery-slide,
+      .gallery-slide img,
+      .gallery-caption .eyebrow,
+      .gallery-caption h3,
+      .gallery-caption p,
+      .gallery-nav {
+        transition: none !important;
+      }
+      .gallery-slide img {
+        transform: none !important;
+      }
+      .gallery-indicator.active .fill {
+        animation: none !important;
+        width: 100%;
+      }
+    }
+ 
+    /* Menu modal scrollbar */
+    .modal-content { max-height: 85vh; overflow-y: auto; }
+    .modal-content::-webkit-scrollbar { width: 4px; }
+    .modal-content::-webkit-scrollbar-track { background: #18181b; }
+    .modal-content::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 2px; }
+ 
+    /* Premium menu styling */
+    .modal-content {
+      background: linear-gradient(180deg, rgba(10,10,12,0.98), rgba(6,6,8,0.98));
+      border: 1px solid rgba(212,175,55,0.06);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 4px 14px rgba(212,175,55,0.02) inset;
+      padding: 1.25rem;
+    }
+    .modal-content .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      color: #fff;
+      margin-bottom: 0.35rem;
+      letter-spacing: 0.01em;
+      font-weight: 600;
+    }
+    .modal-content .section-tag {
+      color: #d4af37; font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    }
+    .modal-content .flex.justify-between.items-start {
+      align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.035);
+      transition: background 0.18s ease, transform 0.12s ease;
+    }
+    .modal-content .flex.justify-between.items-start:hover { background: rgba(255,255,255,0.01); transform: translateY(-2px); }
+    .modal-content .flex.justify-between.items-start:last-child { border-bottom: none; }
+    .modal-content .flex.justify-between.items-start span:first-child { flex: 1; font-size: 14px; color: #f6f4f1; font-weight: 500; }
+    .modal-content .flex.justify-between.items-start span:last-child { font-weight: 700; color: #C9A84C; min-width: 75px; text-align: right; }
+    .modal-content .gold { color: #C9A84C; font-weight: 700; }
+    .modal-content .platter-card { background: linear-gradient(135deg, rgba(201,168,76,0.04), rgba(201,168,76,0.02)); border: 1px solid rgba(201,168,76,0.06); padding: 16px; border-radius: 12px; box-shadow: 0 14px 40px rgba(0,0,0,0.55); }
+    .modal-content .platter-card:hover { transform: translateY(-6px); box-shadow: 0 26px 60px rgba(0,0,0,0.6); }
+    .modal-content .platter-title { font-family: 'Cormorant Garamond', serif; font-size: 1.08rem; color: #e8c97a; }
+    .modal-content .platter-desc { color: #cfc7b6; font-size: 12px; margin-top: 6px; }
+    .modal-content .platter-price { color: #C9A84C; font-weight: 800; margin-top: 10px; font-size: 1.06rem; }
+ 
+    /* subtle price glow on hover */
+    .modal-content .flex.justify-between.items-start:hover span:last-child { text-shadow: 0 6px 18px rgba(201,168,76,0.12); }
+ 
+    /* subtle section separators */
+    .modal-content > .section-divider { height: 1px; background: linear-gradient(to right, rgba(212,175,55,0.06), transparent); margin: 8px 0 12px; }
+ 
+    /* select/input dark styling */
+    select option { background: #18181b; color: white; }
+ 
+    /* Buttons decoration */
+    button,
+    .button-like,
+    input[type="submit"],
+    input[type="button"] {
+      border-radius: 1rem;
+      border: 1px solid rgba(255,255,255,0.16);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    button:hover,
+    input[type="submit"]:hover,
+    input[type="button"]:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.14);
+    }
+    button:focus-visible,
+    input[type="submit"]:focus-visible,
+    input[type="button"]:focus-visible {
+      outline: 2px solid rgba(212,175,55,0.55);
+      outline-offset: 4px;
+    }
+ 
+    .map-embed {
+      width: 100%;
+      min-height: 320px;
+      border: none;
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+    }
+ 
+    #preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 2rem;
+      color: white;
+      text-align: center;
+    }
+    #preloader.hide {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+    }
+    #preloader-logo {
+      width: 96px;
+      height: auto;
+      animation: preloaderPulse 1.7s ease-in-out infinite alternate;
+    }
+    #preloader-text {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      letter-spacing: 0.4em;
+      font-size: 1rem;
+      color: #d4af37;
+      opacity: 0;
+      transform: translateY(18px);
+      animation: preloaderText 1.6s ease forwards 0.4s;
+    }
+    @keyframes preloaderPulse {
+      from { transform: scale(0.92); }
+      to { transform: scale(1.05); }
+    }
+    @keyframes preloaderText {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+ 
+    .mobile-menu {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      z-index: 50;
+      background: rgba(0,0,0,0.97);
+      backdrop-filter: blur(18px);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      transform: translateY(-12px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    }
+    .mobile-menu.open {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+ 
+    /* ══ Scroll progress bar ══ */
+    #scrollProgress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, #8a6d1f, #d4af37 45%, #f6e6ad 70%, #d4af37);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+ 
+    /* ══ Navbar scrolled state ══ */
+    nav { transition: padding 0.35s ease, box-shadow 0.35s ease, background 0.35s ease; }
+    nav.scrolled .nav-inner { padding-top: 0.85rem; padding-bottom: 0.85rem; }
+    nav.scrolled { box-shadow: 0 10px 30px rgba(0,0,0,0.45); }
+    .nav-inner { transition: padding 0.35s ease; }
+    nav a.active-link { color: #d4af37; position: relative; }
+    nav a { position: relative; }
+    nav a.active-link::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: -8px;
+      height: 2px;
+      background: #d4af37;
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+    nav a::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: -8px;
+      height: 2px;
+      background: #d4af37;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    nav a:hover::after { transform: scaleX(1); }
+ 
+    /* ══ Signature ambient effect: water caustics ══ */
+    .caustics {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      mix-blend-mode: screen;
+      opacity: 0.55;
+    }
+    .caustics::before,
+    .caustics::after {
+      content: '';
+      position: absolute;
+      width: 160%;
+      height: 160%;
+      left: -30%;
+      top: -30%;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(212,175,55,0.10) 0%, transparent 22%),
+        radial-gradient(circle at 70% 60%, rgba(201,168,76,0.09) 0%, transparent 18%),
+        radial-gradient(circle at 40% 80%, rgba(255,255,255,0.05) 0%, transparent 16%),
+        radial-gradient(circle at 85% 15%, rgba(212,175,55,0.07) 0%, transparent 20%);
+      animation: causticsDrift 22s ease-in-out infinite;
+      filter: blur(6px);
+    }
+    .caustics::after {
+      animation-duration: 30s;
+      animation-direction: reverse;
+      opacity: 0.6;
+    }
+    @keyframes causticsDrift {
+      0%   { transform: translate(0, 0) rotate(0deg) scale(1); }
+      25%  { transform: translate(3%, 4%) rotate(4deg) scale(1.04); }
+      50%  { transform: translate(-2%, 3%) rotate(-3deg) scale(1.02); }
+      75%  { transform: translate(2%, -3%) rotate(2deg) scale(1.05); }
+      100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    }
+ 
+    /* Cursor-reactive glow (desktop hero only) */
+    .cursor-glow {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: radial-gradient(420px circle at var(--x, 50%) var(--y, 40%), rgba(212,175,55,0.14), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .cursor-glow.active { opacity: 1; }
+ 
+    section.hero-bg > .max-w-3xl,
+    section.hero-bg > .scroll-indicator { position: relative; z-index: 2; }
+ 
+    /* ══ Stat pop-in ══ */
+    .stat-pop {
+      transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+      transform: scale(0.6);
+      opacity: 0;
+    }
+    .fade-in.visible .stat-pop,
+    .stat-pop.visible {
+      transform: scale(1);
+      opacity: 1;
+    }
+ 
+    /* ══ Staggered reveal for common groups ══ */
+    .grid.md\:grid-cols-3 > .fade-in:nth-child(1),
+    .flex.justify-center.gap-16 > .fade-in:nth-child(1) { transition-delay: 0s; }
+    .grid.md\:grid-cols-3 > .fade-in:nth-child(2),
+    .flex.justify-center.gap-16 > .fade-in:nth-child(2) { transition-delay: 0.12s; }
+    .grid.md\:grid-cols-3 > .fade-in:nth-child(3),
+    .flex.justify-center.gap-16 > .fade-in:nth-child(3) { transition-delay: 0.24s; }
+ 
+    /* ══ Magnetic buttons ══ */
+    .magnetic { transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2), box-shadow 0.25s ease; will-change: transform; }
+ 
+    /* ══ Ripple ══ */
+    .ripple-btn { position: relative; overflow: hidden; }
+    .ripple-span {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.45);
+      transform: scale(0);
+      animation: rippleAnim 0.65s ease-out;
+      pointer-events: none;
+    }
+    @keyframes rippleAnim {
+      to { transform: scale(2.6); opacity: 0; }
+    }
+ 
+    /* ══ Gallery thumb subtle tilt ══ */
+    .gallery-thumb { transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease; }
+    .gallery-thumb:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 24px rgba(0,0,0,0.4); }
+ 
+    /* ══ Form field liveliness ══ */
+    #reservationForm input, #reservationForm select, #reservationForm textarea {
+      transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+    }
+    #reservationForm input:focus, #reservationForm select:focus, #reservationForm textarea:focus {
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.12);
+      transform: translateY(-1px);
+    }
+ 
+    /* ══ Reduced motion ══ */
+    @media (prefers-reduced-motion: reduce) {
+      .caustics::before, .caustics::after,
+      #preloader-logo, .scroll-indicator span { animation: none !important; }
+      .fade-in, .stat-pop, .gallery-thumb, .magnetic, #reservationForm input,
+      #reservationForm select, #reservationForm textarea { transition: none !important; }
+    }
+ 
+    /* ══ Premium menu modal background ══ */
+    .menu-modal {
+      background-image: linear-gradient(180deg, rgba(6,6,8,0.55) 0%, rgba(6,6,8,0.94) 42%, rgba(6,6,8,0.99) 100%), var(--menu-bg-image);
+      background-size: cover;
+      background-position: center;
+    }
+ 
+    /* ══ Full-page menu modal (single scrollbar) ══ */
+    #foodModal.modal-overlay, #barModal.modal-overlay {
+      padding: 0;
+      align-items: stretch;
+    }
+    #foodModal .modal-content, #barModal .modal-content {
+      max-width: 100%;
+      width: 100%;
+      min-height: 100vh;
+      margin: 0;
+      border-radius: 0;
+      max-height: none;
+      overflow: visible;
+    }
+    #foodModal, #barModal {
+      scrollbar-width: thin;
+      scrollbar-color: #d4af37 rgba(255,255,255,0.05);
+    }
+    #foodModal::-webkit-scrollbar, #barModal::-webkit-scrollbar { width: 8px; }
+    #foodModal::-webkit-scrollbar-track, #barModal::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); }
+    #foodModal::-webkit-scrollbar-thumb, #barModal::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 8px; }
+    #foodModal .cart-bar, #barModal .cart-bar {
+      position: sticky;
+      bottom: 1rem;
+      backdrop-filter: blur(12px);
+      z-index: 20;
+    }
+ 
+    /* ══ Fixed scrollbar gutter so it never covers prices ══ */
+    .modal-scroll {
+      padding: 1.1rem 1.15rem;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(212,175,55,0.08);
+      border-radius: 1.25rem;
+      backdrop-filter: blur(8px);
+    }
+ 
+    /* ══ Selectable menu items ══ */
+    .menu-item { cursor: pointer; border-radius: 10px; padding-left: 10px !important; padding-right: 10px !important; }
+    .menu-item:hover { background: rgba(212,175,55,0.06) !important; }
+    .menu-item.selected {
+      background: rgba(212,175,55,0.1) !important;
+      box-shadow: inset 3px 0 0 #d4af37;
+    }
+    .price-group { display: inline-flex; align-items: center; gap: 0.6rem; }
+    .menu-check-badge {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(212,175,55,0.4);
+      background: rgba(0,0,0,0.3);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: transparent;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+      transform: scale(0.85);
+      flex-shrink: 0;
+    }
+    .menu-item.selected .menu-check-badge {
+      background: linear-gradient(135deg, #f3d989, #c9a84c);
+      border-color: #d4af37;
+      color: #1a1305;
+      transform: scale(1);
+      box-shadow: 0 4px 14px rgba(212,175,55,0.45), 0 0 0 3px rgba(212,175,55,0.12);
+    }
+    .platter-card.menu-item.selected {
+      box-shadow: none;
+      border-color: #d4af37;
+      background: linear-gradient(135deg, rgba(212,175,55,0.16), rgba(212,175,55,0.05)) !important;
+    }
+    .platter-price .menu-check-badge { margin-left: 0.25rem; }
+ 
+    /* ══ WhatsApp order note ══ */
+    .order-note {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      background: rgba(212,175,55,0.08);
+      border: 1px solid rgba(212,175,55,0.28);
+      color: #f1e6c8;
+      font-size: 0.75rem;
+      line-height: 1.4;
+      letter-spacing: 0.01em;
+      padding: 0.8rem 1.1rem;
+      border-radius: 0.9rem;
+      margin-bottom: 1.1rem;
+    }
+    .order-note i.fa-whatsapp { color: #25D366; font-size: 1.15rem; flex-shrink: 0; }
+    .order-note strong { color: #d4af37; }
+ 
+    /* ══ Cart / checkout bar ══ */
+    .cart-bar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1rem;
+      padding: 0.9rem 1.25rem;
+      background: linear-gradient(135deg, rgba(212,175,55,0.14), rgba(212,175,55,0.05));
+      border: 1px solid rgba(212,175,55,0.3);
+      border-radius: 1rem;
+      flex-wrap: wrap;
+    }
+    .cart-bar.active { display: flex; }
+    .cart-bar-info { font-size: 0.8rem; color: #f6f4f1; }
+    .cart-bar-info strong { color: #d4af37; }
+    .cart-bar button {
+      background: linear-gradient(135deg, #f3d989, #c9a84c);
+      color: #1a1305;
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      padding: 0.75rem 1.4rem;
+      border-radius: 0.7rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      white-space: nowrap;
+      box-shadow: 0 6px 18px rgba(212,175,55,0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .cart-bar button i { font-size: 1rem; color: #128C7E; }
+    .cart-bar button:hover { background: linear-gradient(135deg, #f6e6ad, #d4af37); box-shadow: 0 10px 26px rgba(212,175,55,0.42); }
+  </style>
+</head>
+<body class="bg-black text-white">
+  <div id="scrollProgress"></div>
+  <div id="preloader">
+    <img id="preloader-logo" src="images/logo.png" alt="Liga Lavida logo">
+    <p id="preloader-text">LIGA LAVIDA</p>
+  </div>
+ 
+  <!-- ═══════════ NAVBAR ═══════════ -->
+  <nav class="fixed top-0 w-full bg-black/95 backdrop-blur-md z-50 border-b border-white/10">
+    <div class="nav-inner max-w-7xl mx-auto px-6 py-5 flex justify-between items-center relative">
+      <div class="flex items-center gap-3">
+        <img src="images/logo.png" alt="Liga Lavida logo" height="48" class="h-12 w-auto">
+        <h1 class="text-2xl font-bold tracking-widest gold">LIGA LAVIDA</h1>
+      </div>
+ 
+      <div class="hidden md:flex gap-8 text-xs tracking-widest">
+        <a href="#about" class="nav-link hover:text-yellow-400 transition-colors">OUR STORY</a>
+        <a href="#gallery" class="nav-link hover:text-yellow-400 transition-colors">GALLERY</a>
+        <a href="#menu" class="nav-link hover:text-yellow-400 transition-colors">MENU</a>
+        <a href="#reserve" class="nav-link hover:text-yellow-400 transition-colors">RESERVATIONS</a>
+      </div>
+ 
+      <button onclick="document.getElementById('reserve').scrollIntoView({behavior:'smooth'})"
+              class="magnetic ripple-btn hidden md:block bg-yellow-500 hover:bg-yellow-400 text-black px-6 py-2.5 text-xs tracking-widest font-semibold rounded transition-all">
+        RESERVE TABLE
+      </button>
+ 
+      <button id="hamburger" class="md:hidden text-2xl focus:outline-none">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+ 
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu md:hidden">
+      <div class="flex flex-col px-6 py-8 space-y-6 text-base tracking-widest">
+        <a href="#about" onclick="toggleMobileMenu()" class="hover:text-yellow-400 transition-colors">OUR STORY</a>
+        <a href="#gallery" onclick="toggleMobileMenu()" class="hover:text-yellow-400 transition-colors">GALLERY</a>
+        <a href="#menu" onclick="toggleMobileMenu()" class="hover:text-yellow-400 transition-colors">MENU</a>
+        <a href="#reserve" onclick="toggleMobileMenu()" class="hover:text-yellow-400 transition-colors">RESERVATIONS</a>
+        <button onclick="document.getElementById('reserve').scrollIntoView({behavior:'smooth'}); toggleMobileMenu()"
+                class="ripple-btn mt-4 bg-yellow-500 hover:bg-yellow-400 text-black py-4 rounded font-semibold tracking-widest text-sm">
+          RESERVE YOUR TABLE
+        </button>
+      </div>
+    </div>
+  </nav>
+ 
+  <!-- ═══════════ HERO ═══════════ -->
+  <section id="heroSection" class="hero-bg h-screen flex items-center justify-center text-center px-6 pt-20 relative">
+    <div class="caustics"></div>
+    <div class="cursor-glow" id="heroGlow"></div>
+    <div class="max-w-3xl fade-in">
+      <p class="text-yellow-400 tracking-[0.3em] text-xs mb-4">BENIN CITY • NIGERIA</p>
+      <h1 class="text-7xl md:text-8xl font-bold mb-4 tracking-wide">LIGA LAVIDA</h1>
+      <p class="text-xl md:text-2xl mb-6 text-gray-300 tracking-widest font-light">Luxury Pool Lounge & Bar</p>
+      <p class="text-base max-w-lg mx-auto mb-10 text-gray-400 leading-relaxed">
+        An exclusive poolside sanctuary where refined elegance meets vibrant Nigerian hospitality.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button onclick="document.getElementById('reserve').scrollIntoView({behavior:'smooth'})"
+                class="magnetic ripple-btn bg-yellow-500 hover:bg-yellow-400 text-black px-10 py-4 text-sm tracking-widest font-semibold rounded transition-all">
+          RESERVE YOUR TABLE
+        </button>
+        <button onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})"
+                class="magnetic ripple-btn border border-white/50 hover:border-yellow-400 hover:text-yellow-400 px-10 py-4 text-sm tracking-widest font-semibold rounded transition-all">
+          DISCOVER OUR MENUS
+        </button>
+      </div>
+    </div>
+ 
+    <!-- Bouncing scroll chevron -->
+    <div class="scroll-indicator" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </section>
+  <section id="about" class="py-28 bg-black px-6">
+    <div class="max-w-4xl mx-auto text-center fade-in">
+      <p class="text-yellow-400 text-xs tracking-[0.3em] mb-4">OUR STORY</p>
+      <h2 class="text-5xl md:text-6xl font-bold mb-8">Where Luxury Meets the Poolside</h2>
+      <p class="text-lg leading-relaxed text-gray-400 max-w-2xl mx-auto">
+        Welcome to Liga Lavida — Benin City's premier luxury pool lounge and bar. Nestled in the serene
+        Imariagbe Crescent / Isihor area, we blend modern opulence with warm Edo hospitality.
+        Crystal-clear waters, plush loungers, world-class bar, and curated experiences await.
+      </p>
+ 
+      <div class="flex justify-center gap-16 mt-20 flex-wrap">
+        <div class="text-center fade-in">
+          <div class="text-5xl font-bold gold display stat-pop">24/7</div>
+          <p class="text-xs tracking-widest mt-2 text-gray-400">ALWAYS OPEN</p>
+        </div>
+        <div class="text-center fade-in">
+          <div class="flex justify-center text-3xl gold stat-pop">★★★★★</div>
+          <p class="text-xs tracking-widest mt-2 text-gray-400">PREMIUM EXPERIENCE</p>
+        </div>
+        <div class="text-center fade-in">
+          <div class="text-5xl font-bold gold display stat-pop">BCN</div>
+          <p class="text-xs tracking-widest mt-2 text-gray-400">BENIN CITY, EDO STATE</p>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- ═══════════ PARALLAX QUOTE ═══════════ -->
+  <section class="parallax-quote py-28 px-6 relative overflow-hidden">
+    <div class="caustics"></div>
+    <div class="max-w-3xl mx-auto text-center fade-in relative" style="z-index:2">
+      <p class="text-yellow-400 text-3xl mb-6">✦</p>
+      <blockquote class="text-4xl md:text-5xl font-light italic leading-relaxed text-white display">
+        "Life is too short for ordinary moments — every visit to Liga Lavida should feel like a celebration."
+      </blockquote>
+      <p class="text-yellow-400 text-xs tracking-[0.3em] mt-8">— THE LIGA LAVIDA PHILOSOPHY</p>
+    </div>
+  </section>
+ 
+  <!-- ═══════════ GALLERY ═══════════ -->
+  <section id="gallery" class="py-24 bg-zinc-950 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-14 fade-in">
+        <p class="text-yellow-400 text-xs tracking-[0.3em]">GALLERY</p>
+        <h2 class="text-5xl md:text-6xl font-bold mt-3">The Liga Lavida Experience</h2>
+      </div>
+
+      <div class="gallery-shell fade-in">
+        <div class="gallery-stage" id="galleryStage" role="region" aria-label="Liga Lavida gallery slideshow">
+          <div class="gallery-counter" aria-live="polite">
+            <b id="galleryCurrent">01</b> / <span id="galleryTotal">06</span>
+          </div>
+
+          <button class="gallery-nav prev" id="galleryPrev" type="button" aria-label="Previous image">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <button class="gallery-nav next" id="galleryNext" type="button" aria-label="Next image">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+
+          <div class="gallery-track" id="galleryTrack"></div>
+          <div class="gallery-indicators" id="galleryIndicators"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- ═══════════ MENU ═══════════ -->
+  <section id="menu" class="py-28 px-6 bg-black">
+    <div class="max-w-4xl mx-auto text-center fade-in">
+      <p class="text-yellow-400 text-xs tracking-[0.3em]">TASTE & SIP</p>
+      <h2 class="text-5xl md:text-6xl font-bold mt-4 mb-6">Culinary & Cocktail Excellence</h2>
+      <p class="text-lg text-gray-400 mb-12 max-w-xl mx-auto leading-relaxed">
+        From beautifully crafted dishes to expertly mixed cocktails, every offering is a celebration of flavour and artistry.
+      </p>
+ 
+      <div class="flex flex-col sm:flex-row gap-6 justify-center">
+        <button onclick="openModal('foodModal')"
+                class="magnetic ripple-btn bg-yellow-500 hover:bg-yellow-400 text-black px-10 py-5 rounded font-semibold text-sm tracking-widest transition-all">
+          VIEW FOOD & DINING MENU
+        </button>
+        <button onclick="openModal('barModal')"
+                class="magnetic ripple-btn border border-yellow-400 hover:bg-yellow-400/10 text-yellow-400 px-10 py-5 rounded font-semibold text-sm tracking-widest transition-all">
+          EXPLORE COCKTAILS & BAR MENU
+        </button>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- ═══════════ FOOD MODAL ═══════════ -->
+  <div id="foodModal" class="modal-overlay" onclick="closeModalOutside(event, 'foodModal')">
+    <div class="modal-content menu-modal bg-zinc-900 rounded-3xl w-full max-w-3xl p-6 md:p-10 my-4" style="--menu-bg-image:url('images/lounge-interior.jpg')">
+      <div class="max-w-3xl mx-auto">
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest">LIGA LAVIDA</p>
+          <h2 class="text-3xl md:text-4xl font-bold mt-1">Food & Dining — Food & Platters</h2>
+        </div>
+        <button onclick="closeModal('foodModal')" class="text-gray-400 hover:text-white text-2xl"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+ 
+      <div class="order-note">
+        <i class="fa-brands fa-whatsapp"></i>
+        <span>You can place your order straight on <strong>WhatsApp</strong> — just select what you'd like below, then hit checkout.</span>
+      </div>
+ 
+      <div class="space-y-6 modal-scroll">
+        <!-- Starters -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">STARTERS & APPETIZERS</p>
+          <div class="space-y-3">
+            <div class="flex justify-between items-start menu-item" data-name="Peppered Chicken Wings" data-price="6000" onclick="toggleMenuItem(this)"><span class="text-white">Peppered Chicken Wings</span><span class="price-group"><span class="gold">₦6,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Peppered Gizzard" data-price="5000" onclick="toggleMenuItem(this)"><span class="text-white">Peppered Gizzard</span><span class="price-group"><span class="gold">₦5,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Samosa (4 pcs)" data-price="4000" onclick="toggleMenuItem(this)"><span class="text-white">Samosa (4 pcs)</span><span class="price-group"><span class="gold">₦4,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Chicken &amp; Chips" data-price="6500" onclick="toggleMenuItem(this)"><span class="text-white">Chicken & Chips</span><span class="price-group"><span class="gold">₦6,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Grills -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">GRILLS & BARBECUE</p>
+          <div class="space-y-3">
+            <div class="flex justify-between items-start menu-item" data-name="Grilled Catfish" data-price="10000" onclick="toggleMenuItem(this)"><span class="text-white">Grilled Catfish</span><span class="price-group"><span class="gold">₦10,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Barbecue Chicken" data-price="8000" onclick="toggleMenuItem(this)"><span class="text-white">Barbecue Chicken</span><span class="price-group"><span class="gold">₦8,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Goat Meat Pepper Soup" data-price="6000" onclick="toggleMenuItem(this)"><span class="text-white">Goat Meat Pepper Soup</span><span class="price-group"><span class="gold">₦6,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Assorted Pepper Soup" data-price="6000" onclick="toggleMenuItem(this)"><span class="text-white">Assorted Pepper Soup</span><span class="price-group"><span class="gold">₦6,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Sides -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">SIDES</p>
+          <div class="space-y-3">
+            <div class="flex justify-between items-start menu-item" data-name="French Fries" data-price="3500" onclick="toggleMenuItem(this)"><span class="text-white">French Fries</span><span class="price-group"><span class="gold">₦3,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Plantain Chips" data-price="3000" onclick="toggleMenuItem(this)"><span class="text-white">Plantain Chips</span><span class="price-group"><span class="gold">₦3,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Fried Plantain" data-price="2000" onclick="toggleMenuItem(this)"><span class="text-white">Fried Plantain</span><span class="price-group"><span class="gold">₦2,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Coleslaw" data-price="2500" onclick="toggleMenuItem(this)"><span class="text-white">Coleslaw</span><span class="price-group"><span class="gold">₦2,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Extra Chicken" data-price="2000" onclick="toggleMenuItem(this)"><span class="text-white">Extra Chicken</span><span class="price-group"><span class="gold">₦2,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Extra Turkey" data-price="3000" onclick="toggleMenuItem(this)"><span class="text-white">Extra Turkey</span><span class="price-group"><span class="gold">₦3,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Rice Delicacies -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">LAVIDA SPECIAL — RICE DELICACIES</p>
+          <div class="space-y-3">
+            <div class="flex justify-between items-start menu-item" data-name="Lavida Party Jollof Rice &amp; Grilled Chicken" data-price="6000" onclick="toggleMenuItem(this)"><span class="text-white">Lavida Party Jollof Rice & Grilled Chicken</span><span class="price-group"><span class="gold">₦6,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Seafood Jollof Rice (Fish, Prawns &amp; Crab)" data-price="10000" onclick="toggleMenuItem(this)"><span class="text-white">Seafood Jollof Rice (Fish, Prawns & Crab)</span><span class="price-group"><span class="gold">₦10,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Native Rice &amp; Assorted Meat" data-price="7000" onclick="toggleMenuItem(this)"><span class="text-white">Native Rice & Assorted Meat</span><span class="price-group"><span class="gold">₦7,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Coconut Rice &amp; Turkey" data-price="7000" onclick="toggleMenuItem(this)"><span class="text-white">Coconut Rice & Turkey</span><span class="price-group"><span class="gold">₦7,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Lavida Special Fried Rice" data-price="3000" onclick="toggleMenuItem(this)"><span class="text-white">Lavida Special Fried Rice</span><span class="price-group"><span class="gold">₦3,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Desserts -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">DESSERTS</p>
+          <div class="space-y-3">
+            <div class="flex justify-between items-start menu-item" data-name="Ice Cream" data-price="2000" onclick="toggleMenuItem(this)"><span class="text-white">Ice Cream</span><span class="price-group"><span class="gold">₦2,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Chocolate Cake Slice" data-price="3000" onclick="toggleMenuItem(this)"><span class="text-white">Chocolate Cake Slice</span><span class="price-group"><span class="gold">₦3,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Fruit Salad" data-price="3000" onclick="toggleMenuItem(this)"><span class="text-white">Fruit Salad</span><span class="price-group"><span class="gold">₦3,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Fresh Juices -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">FRESH JUICES</p>
+          <div class="space-y-3">
+            <div class="flex justify-between items-start menu-item" data-name="Orange Juice" data-price="3000" onclick="toggleMenuItem(this)"><span class="text-white">Orange Juice</span><span class="price-group"><span class="gold">₦3,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Pineapple Juice" data-price="3000" onclick="toggleMenuItem(this)"><span class="text-white">Pineapple Juice</span><span class="price-group"><span class="gold">₦3,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Watermelon Juice" data-price="3000" onclick="toggleMenuItem(this)"><span class="text-white">Watermelon Juice</span><span class="price-group"><span class="gold">₦3,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Chapman" data-price="3000" onclick="toggleMenuItem(this)"><span class="text-white">Chapman</span><span class="price-group"><span class="gold">₦3,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Platters -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">LAVIDA FAMILY PLATTERS</p>
+          <div class="space-y-4">
+            <div class="platter-card menu-item" data-name="Couples Platter" data-price="15000" onclick="toggleMenuItem(this)"><div class="platter-title">Couples Platter</div><div class="platter-desc">Perfect for 2 persons</div><div class="platter-price flex items-center gap-2"><span>₦15,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></div></div>
+            <div class="platter-card menu-item" data-name="Friends Platter" data-price="25000" onclick="toggleMenuItem(this)"><div class="platter-title">Friends Platter</div><div class="platter-desc">Perfect for 4 persons</div><div class="platter-price flex items-center gap-2"><span>₦25,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></div></div>
+            <div class="platter-card menu-item" data-name="VIP Party Platter" data-price="50000" onclick="toggleMenuItem(this)"><div class="platter-title">VIP Party Platter</div><div class="platter-desc">Perfect for 6–8 persons</div><div class="platter-price flex items-center gap-2"><span>₦50,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></div></div>
+          </div>
+        </div>
+      </div>
+ 
+      <p class="text-xs text-gray-500 text-center mt-4">ALL PRICES IN NIGERIAN NAIRA ₦ — Prices are subject to change. Please confirm with our team.</p>
+      <div class="cart-bar" id="cartBar-foodModal">
+        <div class="cart-bar-info"><strong id="cartCount-foodModal">0</strong> item(s) selected • <strong id="cartTotal-foodModal">₦0</strong></div>
+        <button type="button" onclick="checkoutCart()"><i class="fa-brands fa-whatsapp"></i> CHECKOUT VIA WHATSAPP</button>
+      </div>
+      <button onclick="closeModal('foodModal')" class="mt-6 w-full border border-yellow-400 text-yellow-400 hover:bg-yellow-400/10 py-3 rounded-xl text-sm tracking-widest transition-all">CLOSE MENU</button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- ═══════════ BAR MODAL ═══════════ -->
+  <div id="barModal" class="modal-overlay" onclick="closeModalOutside(event, 'barModal')">
+    <div class="modal-content menu-modal bg-zinc-900 rounded-3xl w-full max-w-3xl p-6 md:p-10 my-4" style="--menu-bg-image:url('images/lounge-interior2.jpg')">
+      <div class="max-w-3xl mx-auto">
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest">LIGA LAVIDA</p>
+          <h2 class="text-3xl md:text-4xl font-bold mt-1">Bar Menu — Drinks</h2>
+        </div>
+        <button onclick="closeModal('barModal')" class="text-gray-400 hover:text-white text-2xl"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+ 
+      <div class="order-note">
+        <i class="fa-brands fa-whatsapp"></i>
+        <span>You can place your order straight on <strong>WhatsApp</strong> — just select what you'd like below, then hit checkout.</span>
+      </div>
+ 
+      <div class="space-y-6 modal-scroll">
+        <!-- Section 01 — Beer -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">SECTION 01 — BEER</p>
+          <div class="grid grid-cols-1 gap-2">
+            <div class="flex justify-between items-start menu-item" data-name="Heineken" data-price="2000" onclick="toggleMenuItem(this)"><span class="text-white font-medium">Heineken</span><span class="price-group"><span class="gold font-semibold">₦2,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Budweiser" data-price="2500" onclick="toggleMenuItem(this)"><span class="text-white font-medium">Budweiser</span><span class="price-group"><span class="gold font-semibold">₦2,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Guinness Stout" data-price="4000" onclick="toggleMenuItem(this)"><span class="text-white font-medium">Guinness Stout</span><span class="price-group"><span class="gold font-semibold">₦4,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Hero Small" data-price="2000" onclick="toggleMenuItem(this)"><span class="text-white font-medium">Hero Small</span><span class="price-group"><span class="gold font-semibold">₦2,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="33 Export" data-price="3000" onclick="toggleMenuItem(this)"><span class="text-white font-medium">33 Export</span><span class="price-group"><span class="gold font-semibold">₦3,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Hero Big" data-price="2500" onclick="toggleMenuItem(this)"><span class="text-white font-medium">Hero Big</span><span class="price-group"><span class="gold font-semibold">₦2,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Desperado" data-price="2500" onclick="toggleMenuItem(this)"><span class="text-white font-medium">Desperado</span><span class="price-group"><span class="gold font-semibold">₦2,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Double Black (Big)" data-price="3500" onclick="toggleMenuItem(this)"><span class="text-white font-medium">Double Black (Big)</span><span class="price-group"><span class="gold font-semibold">₦3,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Black Bullet" data-price="4000" onclick="toggleMenuItem(this)"><span class="text-white font-medium">Black Bullet</span><span class="price-group"><span class="gold font-semibold">₦4,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Double Black (Small)" data-price="2500" onclick="toggleMenuItem(this)"><span class="text-white font-medium">Double Black (Small)</span><span class="price-group"><span class="gold font-semibold">₦2,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Section 02 — Whiskey -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">SECTION 02 — WHISKEY</p>
+          <div class="grid grid-cols-1 gap-2">
+            <div class="flex justify-between items-start menu-item" data-name="Jack Daniels" data-price="70000" onclick="toggleMenuItem(this)"><span class="text-white">Jack Daniels</span><span class="price-group"><span class="gold">₦70,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Johnnie Walker Black Label" data-price="80000" onclick="toggleMenuItem(this)"><span class="text-white">Johnnie Walker Black Label</span><span class="price-group"><span class="gold">₦80,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Johnnie Walker Red Label" data-price="80000" onclick="toggleMenuItem(this)"><span class="text-white">Johnnie Walker Red Label</span><span class="price-group"><span class="gold">₦80,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Martell VS" data-price="90000" onclick="toggleMenuItem(this)"><span class="text-white">Martell VS</span><span class="price-group"><span class="gold">₦90,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Jameson Black Barrel" data-price="80000" onclick="toggleMenuItem(this)"><span class="text-white">Jameson Black Barrel</span><span class="price-group"><span class="gold">₦80,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Martell Blue Swift" data-price="150000" onclick="toggleMenuItem(this)"><span class="text-white">Martell Blue Swift</span><span class="price-group"><span class="gold">₦150,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Hennessy VS" data-price="100000" onclick="toggleMenuItem(this)"><span class="text-white">Hennessy VS</span><span class="price-group"><span class="gold">₦100,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Hennessy VSOP" data-price="150000" onclick="toggleMenuItem(this)"><span class="text-white">Hennessy VSOP</span><span class="price-group"><span class="gold">₦150,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Martini" data-price="75000" onclick="toggleMenuItem(this)"><span class="text-white">Martini</span><span class="price-group"><span class="gold">₦75,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Gold Bottle" data-price="75000" onclick="toggleMenuItem(this)"><span class="text-white">Gold Bottle</span><span class="price-group"><span class="gold">₦75,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="St Remy" data-price="70000" onclick="toggleMenuItem(this)"><span class="text-white">St Remy</span><span class="price-group"><span class="gold">₦70,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="St John" data-price="60000" onclick="toggleMenuItem(this)"><span class="text-white">St John</span><span class="price-group"><span class="gold">₦60,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="William Jones" data-price="40000" onclick="toggleMenuItem(this)"><span class="text-white">William Jones</span><span class="price-group"><span class="gold">₦40,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Vine" data-price="40000" onclick="toggleMenuItem(this)"><span class="text-white">Vine</span><span class="price-group"><span class="gold">₦40,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Jack Williams" data-price="70000" onclick="toggleMenuItem(this)"><span class="text-white">Jack Williams</span><span class="price-group"><span class="gold">₦70,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Black Island" data-price="50000" onclick="toggleMenuItem(this)"><span class="text-white">Black Island</span><span class="price-group"><span class="gold">₦50,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Section 03 — Vodka -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">SECTION 03 — VODKA</p>
+          <div class="grid grid-cols-1 gap-2">
+            <div class="flex justify-between items-start menu-item" data-name="Smirnoff Choco Vodka" data-price="25000" onclick="toggleMenuItem(this)"><span class="text-white">Smirnoff Choco Vodka</span><span class="price-group"><span class="gold">₦25,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Smirnoff Vodka Small" data-price="5000" onclick="toggleMenuItem(this)"><span class="text-white">Smirnoff Vodka Small</span><span class="price-group"><span class="gold">₦5,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Flirt Vodka" data-price="35000" onclick="toggleMenuItem(this)"><span class="text-white">Flirt Vodka</span><span class="price-group"><span class="gold">₦35,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Ciroc" data-price="55000" onclick="toggleMenuItem(this)"><span class="text-white">Ciroc</span><span class="price-group"><span class="gold">₦55,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Skirt" data-price="40000" onclick="toggleMenuItem(this)"><span class="text-white">Skirt</span><span class="price-group"><span class="gold">₦40,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Section 04 — Tequila & Rum & Gin -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">SECTION 04 — TEQUILA, RUM & GIN</p>
+          <div class="grid grid-cols-1 gap-2">
+            <div class="flex justify-between items-start menu-item" data-name="Don Julio" data-price="600000" onclick="toggleMenuItem(this)"><span class="text-white">Don Julio</span><span class="price-group"><span class="gold">₦600,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Camino Real Tequila" data-price="35000" onclick="toggleMenuItem(this)"><span class="text-white">Camino Real Tequila</span><span class="price-group"><span class="gold">₦35,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Tequila Olmeca" data-price="80000" onclick="toggleMenuItem(this)"><span class="text-white">Tequila Olmeca</span><span class="price-group"><span class="gold">₦80,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Bacardi" data-price="35000" onclick="toggleMenuItem(this)"><span class="text-white">Bacardi</span><span class="price-group"><span class="gold">₦35,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Gordon's (Small)" data-price="5000" onclick="toggleMenuItem(this)"><span class="text-white">Gordon's (Small)</span><span class="price-group"><span class="gold">₦5,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Gordon's (Big)" data-price="30000" onclick="toggleMenuItem(this)"><span class="text-white">Gordon's (Big)</span><span class="price-group"><span class="gold">₦30,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Section 05 — Liqueurs & Creams -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">SECTION 05 — LIQUEURS & CREAMS</p>
+          <div class="grid grid-cols-1 gap-2">
+            <div class="flex justify-between items-start menu-item" data-name="Baileys Original" data-price="50000" onclick="toggleMenuItem(this)"><span class="text-white">Baileys Original</span><span class="price-group"><span class="gold">₦50,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Best Cream (Medium)" data-price="5000" onclick="toggleMenuItem(this)"><span class="text-white">Best Cream (Medium)</span><span class="price-group"><span class="gold">₦5,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Jägermeister Herb" data-price="50000" onclick="toggleMenuItem(this)"><span class="text-white">Jägermeister Herb</span><span class="price-group"><span class="gold">₦50,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="American Honey" data-price="50000" onclick="toggleMenuItem(this)"><span class="text-white">American Honey</span><span class="price-group"><span class="gold">₦50,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="The Observatory" data-price="40000" onclick="toggleMenuItem(this)"><span class="text-white">The Observatory</span><span class="price-group"><span class="gold">₦40,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Big Ben" data-price="10000" onclick="toggleMenuItem(this)"><span class="text-white">Big Ben</span><span class="price-group"><span class="gold">₦10,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Section 06 — Wines & Champagne -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">SECTION 06 — WINES & CHAMPAGNE</p>
+          <div class="grid grid-cols-1 gap-2">
+            <div class="flex justify-between items-start menu-item" data-name="Carlo Rossi Sweet Red" data-price="25000" onclick="toggleMenuItem(this)"><span class="text-white">Carlo Rossi Sweet Red</span><span class="price-group"><span class="gold">₦25,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Four Cousins (Sweet Red/White/Rose)" data-price="25000" onclick="toggleMenuItem(this)"><span class="text-white">Four Cousins (Sweet Red/White/Rose)</span><span class="price-group"><span class="gold">₦25,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Andre Rosé" data-price="60000" onclick="toggleMenuItem(this)"><span class="text-white">Andre Rosé</span><span class="price-group"><span class="gold">₦60,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Belaire Rose" data-price="120000" onclick="toggleMenuItem(this)"><span class="text-white">Belaire Rose</span><span class="price-group"><span class="gold">₦120,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Belaire Lux" data-price="150000" onclick="toggleMenuItem(this)"><span class="text-white">Belaire Lux</span><span class="price-group"><span class="gold">₦150,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Azul" data-price="500000" onclick="toggleMenuItem(this)"><span class="text-white">Azul</span><span class="price-group"><span class="gold">₦500,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Eva Wine" data-price="5000" onclick="toggleMenuItem(this)"><span class="text-white">Eva Wine</span><span class="price-group"><span class="gold">₦5,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Bama" data-price="20000" onclick="toggleMenuItem(this)"><span class="text-white">Bama</span><span class="price-group"><span class="gold">₦20,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Prosecco Rose" data-price="40000" onclick="toggleMenuItem(this)"><span class="text-white">Prosecco Rose</span><span class="price-group"><span class="gold">₦40,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Agor" data-price="25000" onclick="toggleMenuItem(this)"><span class="text-white">Agor</span><span class="price-group"><span class="gold">₦25,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="4th Street" data-price="25000" onclick="toggleMenuItem(this)"><span class="text-white">4th Street</span><span class="price-group"><span class="gold">₦25,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Veleta" data-price="5000" onclick="toggleMenuItem(this)"><span class="text-white">Veleta</span><span class="price-group"><span class="gold">₦5,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Section 07 — Wine by the Glass -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">SECTION 07 — WINE BY THE GLASS</p>
+          <div class="grid grid-cols-1 gap-2">
+            <div class="flex justify-between items-start menu-item" data-name="Red Wine (glass)" data-price="3000" onclick="toggleMenuItem(this)"><span class="text-white">Red Wine (glass)</span><span class="price-group"><span class="gold">₦3,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="White Wine (glass)" data-price="3500" onclick="toggleMenuItem(this)"><span class="text-white">White Wine (glass)</span><span class="price-group"><span class="gold">₦3,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Rosé Wine (glass)" data-price="4000" onclick="toggleMenuItem(this)"><span class="text-white">Rosé Wine (glass)</span><span class="price-group"><span class="gold">₦4,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Sparkling Wine (glass)" data-price="4000" onclick="toggleMenuItem(this)"><span class="text-white">Sparkling Wine (glass)</span><span class="price-group"><span class="gold">₦4,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Section 08 — Energy Drinks & Mixers -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">SECTION 08 — ENERGY DRINKS & MIXERS</p>
+          <div class="grid grid-cols-1 gap-2">
+            <div class="flex justify-between items-start menu-item" data-name="Red Bull" data-price="3000" onclick="toggleMenuItem(this)"><span class="text-white">Red Bull</span><span class="price-group"><span class="gold">₦3,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Monster" data-price="4000" onclick="toggleMenuItem(this)"><span class="text-white">Monster</span><span class="price-group"><span class="gold">₦4,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Predator" data-price="1200" onclick="toggleMenuItem(this)"><span class="text-white">Predator</span><span class="price-group"><span class="gold">₦1,200</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Fearless" data-price="1200" onclick="toggleMenuItem(this)"><span class="text-white">Fearless</span><span class="price-group"><span class="gold">₦1,200</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Power Horse Liquor" data-price="2500" onclick="toggleMenuItem(this)"><span class="text-white">Power Horse Liquor</span><span class="price-group"><span class="gold">₦2,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Blue Bullet" data-price="3000" onclick="toggleMenuItem(this)"><span class="text-white">Blue Bullet</span><span class="price-group"><span class="gold">₦3,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Section 09 — Soft Drinks & Water -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">SECTION 09 — SOFT DRINKS & WATER</p>
+          <div class="grid grid-cols-1 gap-2">
+            <div class="flex justify-between items-start menu-item" data-name="Coca-Cola Plastic" data-price="1000" onclick="toggleMenuItem(this)"><span class="text-white">Coca-Cola Plastic</span><span class="price-group"><span class="gold">₦1,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Coca-Cola Can" data-price="1500" onclick="toggleMenuItem(this)"><span class="text-white">Coca-Cola Can</span><span class="price-group"><span class="gold">₦1,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Fanta Plastic" data-price="1000" onclick="toggleMenuItem(this)"><span class="text-white">Fanta Plastic</span><span class="price-group"><span class="gold">₦1,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Fanta Can" data-price="1500" onclick="toggleMenuItem(this)"><span class="text-white">Fanta Can</span><span class="price-group"><span class="gold">₦1,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Soda Water" data-price="1500" onclick="toggleMenuItem(this)"><span class="text-white">Soda Water</span><span class="price-group"><span class="gold">₦1,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Eva Water" data-price="500" onclick="toggleMenuItem(this)"><span class="text-white">Eva Water</span><span class="price-group"><span class="gold">₦500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Olivia Water" data-price="500" onclick="toggleMenuItem(this)"><span class="text-white">Olivia Water</span><span class="price-group"><span class="gold">₦500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Aquafina Water" data-price="500" onclick="toggleMenuItem(this)"><span class="text-white">Aquafina Water</span><span class="price-group"><span class="gold">₦500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Hollandia Plain Yoghurt" data-price="3500" onclick="toggleMenuItem(this)"><span class="text-white">Hollandia Plain Yoghurt</span><span class="price-group"><span class="gold">₦3,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Chi Exotic" data-price="3500" onclick="toggleMenuItem(this)"><span class="text-white">Chi Exotic</span><span class="price-group"><span class="gold">₦3,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Ysmartic" data-price="3500" onclick="toggleMenuItem(this)"><span class="text-white">Ysmartic</span><span class="price-group"><span class="gold">₦3,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Vitamilk" data-price="3000" onclick="toggleMenuItem(this)"><span class="text-white">Vitamilk</span><span class="price-group"><span class="gold">₦3,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Malt" data-price="1500" onclick="toggleMenuItem(this)"><span class="text-white">Malt</span><span class="price-group"><span class="gold">₦1,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Fayrouz" data-price="1000" onclick="toggleMenuItem(this)"><span class="text-white">Fayrouz</span><span class="price-group"><span class="gold">₦1,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Chi Active" data-price="3500" onclick="toggleMenuItem(this)"><span class="text-white">Chi Active</span><span class="price-group"><span class="gold">₦3,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Section 10 — Other Alcoholic Spirits -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">SECTION 10 — OTHER ALCOHOLIC SPIRITS</p>
+          <div class="grid grid-cols-1 gap-2">
+            <div class="flex justify-between items-start menu-item" data-name="Campari (Big)" data-price="35000" onclick="toggleMenuItem(this)"><span class="text-white">Campari (Big)</span><span class="price-group"><span class="gold">₦35,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Campari (Small)" data-price="25000" onclick="toggleMenuItem(this)"><span class="text-white">Campari (Small)</span><span class="price-group"><span class="gold">₦25,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Orijin Bitters Bottle" data-price="15000" onclick="toggleMenuItem(this)"><span class="text-white">Orijin Bitters Bottle</span><span class="price-group"><span class="gold">₦15,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Orijin Bitters (PET)" data-price="5000" onclick="toggleMenuItem(this)"><span class="text-white">Orijin Bitters (PET)</span><span class="price-group"><span class="gold">₦5,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Orijin (PET)" data-price="2000" onclick="toggleMenuItem(this)"><span class="text-white">Orijin (PET)</span><span class="price-group"><span class="gold">₦2,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Action Bitters" data-price="1500" onclick="toggleMenuItem(this)"><span class="text-white">Action Bitters</span><span class="price-group"><span class="gold">₦1,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Lacoco" data-price="2500" onclick="toggleMenuItem(this)"><span class="text-white">Lacoco</span><span class="price-group"><span class="gold">₦2,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Section 11 — Shisha -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">SECTION 11 — SHISHA</p>
+          <div class="grid grid-cols-1 gap-2">
+            <div class="flex justify-between items-start menu-item" data-name="Shisha" data-price="10000" onclick="toggleMenuItem(this)"><span class="text-white">Shisha</span><span class="price-group"><span class="gold">₦10,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Shisha Coal" data-price="2000" onclick="toggleMenuItem(this)"><span class="text-white">Shisha Coal</span><span class="price-group"><span class="gold">₦2,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+ 
+        <!-- Cocktails — Signature & Classic & Mocktails -->
+        <div>
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">SIGNATURE COCKTAILS</p>
+          <div class="grid grid-cols-1 gap-2 mb-4">
+            <div class="flex justify-between items-start menu-item" data-name="Lavida Paradise" data-price="7000" onclick="toggleMenuItem(this)"><span class="text-white">Lavida Paradise</span><span class="price-group"><span class="gold">₦7,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Lavida Sunset" data-price="6500" onclick="toggleMenuItem(this)"><span class="text-white">Lavida Sunset</span><span class="price-group"><span class="gold">₦6,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Lavida Royal Blue" data-price="8000" onclick="toggleMenuItem(this)"><span class="text-white">Lavida Royal Blue</span><span class="price-group"><span class="gold">₦8,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Lavida Tropical Storm" data-price="8000" onclick="toggleMenuItem(this)"><span class="text-white">Lavida Tropical Storm</span><span class="price-group"><span class="gold">₦8,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Lavida Premium Punch" data-price="8500" onclick="toggleMenuItem(this)"><span class="text-white">Lavida Premium Punch</span><span class="price-group"><span class="gold">₦8,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+ 
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">CLASSIC COCKTAILS</p>
+          <div class="grid grid-cols-1 gap-2 mb-4">
+            <div class="flex justify-between items-start menu-item" data-name="Sex on the Beach" data-price="6500" onclick="toggleMenuItem(this)"><span class="text-white">Sex on the Beach</span><span class="price-group"><span class="gold">₦6,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Blue Lagoon" data-price="6000" onclick="toggleMenuItem(this)"><span class="text-white">Blue Lagoon</span><span class="price-group"><span class="gold">₦6,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Pina Colada" data-price="6000" onclick="toggleMenuItem(this)"><span class="text-white">Pina Colada</span><span class="price-group"><span class="gold">₦6,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Whiskey Sour" data-price="7000" onclick="toggleMenuItem(this)"><span class="text-white">Whiskey Sour</span><span class="price-group"><span class="gold">₦7,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Martini" data-price="7000" onclick="toggleMenuItem(this)"><span class="text-white">Martini</span><span class="price-group"><span class="gold">₦7,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Mojito" data-price="6500" onclick="toggleMenuItem(this)"><span class="text-white">Mojito</span><span class="price-group"><span class="gold">₦6,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Long Island Iced Tea" data-price="7000" onclick="toggleMenuItem(this)"><span class="text-white">Long Island Iced Tea</span><span class="price-group"><span class="gold">₦7,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Margarita" data-price="6000" onclick="toggleMenuItem(this)"><span class="text-white">Margarita</span><span class="price-group"><span class="gold">₦6,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Cosmopolitan" data-price="6000" onclick="toggleMenuItem(this)"><span class="text-white">Cosmopolitan</span><span class="price-group"><span class="gold">₦6,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Tequila Sunrise" data-price="5000" onclick="toggleMenuItem(this)"><span class="text-white">Tequila Sunrise</span><span class="price-group"><span class="gold">₦5,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+ 
+          <p class="text-yellow-400 text-xs tracking-widest mb-3 border-b border-yellow-400/20 pb-2">PREMIUM MOCKTAILS</p>
+          <div class="grid grid-cols-1 gap-2">
+            <div class="flex justify-between items-start menu-item" data-name="Lavida Virgin Paradise" data-price="4000" onclick="toggleMenuItem(this)"><span class="text-white">Lavida Virgin Paradise</span><span class="price-group"><span class="gold">₦4,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Lavida Tropical Splash" data-price="4000" onclick="toggleMenuItem(this)"><span class="text-white">Lavida Tropical Splash</span><span class="price-group"><span class="gold">₦4,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Lavida Berry Blast" data-price="4000" onclick="toggleMenuItem(this)"><span class="text-white">Lavida Berry Blast</span><span class="price-group"><span class="gold">₦4,000</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Lavida Fruit Fusion" data-price="4500" onclick="toggleMenuItem(this)"><span class="text-white">Lavida Fruit Fusion</span><span class="price-group"><span class="gold">₦4,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+            <div class="flex justify-between items-start menu-item" data-name="Lavida Blue Ocean" data-price="4500" onclick="toggleMenuItem(this)"><span class="text-white">Lavida Blue Ocean</span><span class="price-group"><span class="gold">₦4,500</span><span class="menu-check-badge"><i class="fa-solid fa-check"></i></span></span></div>
+          </div>
+        </div>
+      </div>
+ 
+      <p class="text-xs text-gray-500 text-center mt-4">ALL PRICES IN NIGERIAN NAIRA ₦ — Prices are subject to change. Please confirm with our team.</p>
+      <div class="cart-bar" id="cartBar-barModal">
+        <div class="cart-bar-info"><strong id="cartCount-barModal">0</strong> item(s) selected • <strong id="cartTotal-barModal">₦0</strong></div>
+        <button type="button" onclick="checkoutCart()"><i class="fa-brands fa-whatsapp"></i> CHECKOUT VIA WHATSAPP</button>
+      </div>
+      <button onclick="closeModal('barModal')" class="mt-6 w-full border border-yellow-400 text-yellow-400 hover:bg-yellow-400/10 py-3 rounded-xl text-sm tracking-widest transition-all">CLOSE MENU</button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- ═══════════ RESERVATIONS ═══════════ -->
+  <section id="reserve" class="py-28 bg-zinc-950 px-6">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-14 fade-in">
+        <p class="text-yellow-400 text-xs tracking-[0.3em]">BOOK YOUR VISIT</p>
+        <h2 class="text-5xl md:text-6xl font-bold mt-4">Reserve Your Experience</h2>
+      </div>
+ 
+      <div class="grid md:grid-cols-3 gap-6 mb-14">
+        <div class="bg-zinc-900 p-8 rounded-2xl text-center fade-in">
+          <i class="fa-solid fa-location-dot text-4xl gold mb-4"></i>
+          <h3 class="text-xs tracking-widest mb-3">LOCATION</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Imariagbe Crescent / Isihor,<br>Benin City, Edo State</p>
+        </div>
+        <div class="bg-zinc-900 p-8 rounded-2xl text-center fade-in">
+          <i class="fa-solid fa-clock text-4xl gold mb-4"></i>
+          <h3 class="text-xs tracking-widest mb-3">HOURS</h3>
+          <p class="text-gray-400 text-sm">Mon – Sun • 24/7</p>
+        </div>
+        <div class="bg-zinc-900 p-8 rounded-2xl text-center fade-in">
+          <i class="fa-solid fa-envelope text-4xl gold mb-4"></i>
+          <h3 class="text-xs tracking-widest mb-3">CONTACT</h3>
+          <p class="text-gray-400 text-sm">clubligalavida@gmail.com</p>
+        </div>
+      </div>
+ 
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden mb-14 fade-in">
+        <iframe
+          class="map-embed"
+          loading="lazy"
+          src="https://maps.google.com/maps?q=Imariagbe%20Crescent%20Isihor%20Benin%20City%20Edo%20State&t=&z=13&ie=UTF8&iwloc=&output=embed"
+          aria-label="Liga Lavida location map">
+        </iframe>
+      </div>
+ 
+      <!-- Reservation Form -->
+      <div class="bg-zinc-900 rounded-3xl p-8 md:p-12 fade-in">
+        <h3 class="text-3xl font-semibold text-center mb-10">Make a Reservation</h3>
+        <form id="reservationForm" class="space-y-6">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-xs tracking-widest mb-2 text-gray-400">FULL NAME</label>
+              <input id="fname" type="text" required placeholder="Your full name"
+                     class="w-full bg-black border border-white/20 rounded-xl px-5 py-4 focus:outline-none focus:border-yellow-400 transition-colors text-sm">
+            </div>
+            <div>
+              <label class="block text-xs tracking-widest mb-2 text-gray-400">PHONE NUMBER</label>
+              <input id="fphone" type="tel" required placeholder="+234 000 0000 000"
+                     class="w-full bg-black border border-white/20 rounded-xl px-5 py-4 focus:outline-none focus:border-yellow-400 transition-colors text-sm">
+            </div>
+          </div>
+ 
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-xs tracking-widest mb-2 text-gray-400">DATE</label>
+              <input id="fdate" type="date" required
+                     class="w-full bg-black border border-white/20 rounded-xl px-5 py-4 focus:outline-none focus:border-yellow-400 transition-colors text-sm">
+            </div>
+            <div>
+              <label class="block text-xs tracking-widest mb-2 text-gray-400">TIME</label>
+              <input id="ftime" type="time" required
+                     class="w-full bg-black border border-white/20 rounded-xl px-5 py-4 focus:outline-none focus:border-yellow-400 transition-colors text-sm">
+            </div>
+          </div>
+ 
+          <div>
+            <label class="block text-xs tracking-widest mb-2 text-gray-400">NUMBER OF GUESTS</label>
+            <select id="fguests" required
+                    class="w-full bg-black border border-white/20 rounded-xl px-5 py-4 focus:outline-none focus:border-yellow-400 transition-colors text-sm">
+              <option value="">Select guests</option>
+              <option value="1">1 Guest</option>
+              <option value="2">2 Guests</option>
+              <option value="3">3 Guests</option>
+              <option value="4">4 Guests</option>
+              <option value="5">5 Guests</option>
+              <option value="6+">6+ Guests</option>
+            </select>
+          </div>
+ 
+          <div>
+            <label class="block text-xs tracking-widest mb-2 text-gray-400">SPECIAL REQUESTS (OPTIONAL)</label>
+            <textarea id="freqs" class="w-full bg-black border border-white/20 rounded-xl px-5 py-4 h-28 focus:outline-none focus:border-yellow-400 transition-colors text-sm"
+                      placeholder="Birthday celebration, VIP table, dietary requirements..."></textarea>
+          </div>
+ 
+          <button type="submit" id="submitBtn"
+                  class="ripple-btn w-full bg-green-500 hover:bg-green-600 py-5 rounded-2xl text-sm tracking-widest font-semibold transition-all flex items-center justify-center gap-3">
+            <i class="fa-brands fa-whatsapp text-xl"></i>
+            CONFIRM RESERVATION VIA WHATSAPP
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <footer class="bg-black border-t border-white/10 py-20 px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="flex items-center justify-center gap-3 mb-2">
+        <img src="images/logo.png" alt="Liga Lavida logo" height="48" class="h-12 w-auto">
+        <h2 class="text-4xl font-bold gold">LIGA LAVIDA</h2>
+      </div>
+      <p class="text-gray-500 text-sm tracking-widest">LUXURY POOL LOUNGE & BAR • BENIN CITY, NIGERIA</p>
+ 
+      <div class="flex justify-center gap-6 mt-10 text-2xl">
+        <a href="https://instagram.com/club_liga_lavida" target="_blank" class="text-gray-400 hover:text-yellow-400 transition-colors"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://tiktok.com/@club_liga_lavida" target="_blank" class="text-gray-400 hover:text-yellow-400 transition-colors"><i class="fa-brands fa-tiktok"></i></a>
+        <a href="https://wa.me/2348000000000" target="_blank" class="text-gray-400 hover:text-yellow-400 transition-colors"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="mailto:clubligalavida@gmail.com" class="text-gray-400 hover:text-yellow-400 transition-colors"><i class="fa-solid fa-envelope"></i></a>
+      </div>
+      <p class="text-gray-500 text-sm tracking-widest mt-4">Follow us on TikTok: <a href="https://tiktok.com/@club_liga_lavida" target="_blank" class="text-yellow-400 hover:text-yellow-300 transition-colors">@club_liga_lavida</a></p>
+ 
+      <div class="mt-10 flex flex-wrap justify-center gap-x-10 gap-y-3 text-xs tracking-widest text-gray-400">
+        <a href="#about" class="hover:text-yellow-400 transition-colors">OUR STORY</a>
+        <a href="#gallery" class="hover:text-yellow-400 transition-colors">GALLERY</a>
+        <a href="#menu" class="hover:text-yellow-400 transition-colors">MENU</a>
+        <a href="#reserve" class="hover:text-yellow-400 transition-colors">RESERVATIONS</a>
+      </div>
+ 
+      <p class="text-xs text-gray-600 mt-16">© 2026 Liga Lavida. All Rights Reserved.</p>
+    </div>
+  </footer>
+ 
+  <!-- Toast Notification -->
+  <div id="toast">✅ Reservation sent via WhatsApp!</div>
+ 
+  <!-- Scroll to Top -->
+  <button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">
+    <i class="fa-solid fa-chevron-up"></i>
+  </button>
+ 
+  <!-- ═══════════ SCRIPTS ═══════════ -->
+  <script>
+    const preloaderStart = Date.now();
+    tailwind.config = { content: [] }
+ 
+    function hidePreloader() {
+      const preloader = document.getElementById('preloader');
+      if (!preloader) return;
+      preloader.classList.add('hide');
+      setTimeout(() => preloader.remove(), 900);
+    }
+ 
+    window.addEventListener('load', () => {
+      const elapsed = Date.now() - preloaderStart;
+      const minDuration = 2300;
+      const delay = Math.max(minDuration - elapsed, 0);
+      setTimeout(hidePreloader, delay);
+    });
+ 
+    // ── Fade-in ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+ 
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ 
+    // ── Scroll progress bar + navbar scrolled state ──
+    const progressBar = document.getElementById('scrollProgress');
+    const navEl = document.querySelector('nav');
+    function updateScrollUI() {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      if (progressBar) progressBar.style.width = pct + '%';
+      if (navEl) navEl.classList.toggle('scrolled', scrollTop > 40);
+    }
+    window.addEventListener('scroll', updateScrollUI, { passive: true });
+    updateScrollUI();
+ 
+    // ── Active nav link tracking ──
+    const navLinks = Array.from(document.querySelectorAll('.nav-link'));
+    const trackedSections = navLinks
+      .map(link => document.querySelector(link.getAttribute('href')))
+      .filter(Boolean);
+    if (trackedSections.length) {
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = '#' + entry.target.id;
+            navLinks.forEach(link => link.classList.toggle('active-link', link.getAttribute('href') === id));
+          }
+        });
+      }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+      trackedSections.forEach(sec => sectionObserver.observe(sec));
+    }
+ 
+    // ── Cursor-reactive glow in hero (desktop only, respects reduced motion) ──
+    const heroGlow = document.getElementById('heroGlow');
+    const heroSection = document.getElementById('heroSection');
+    if (heroGlow && heroSection && !prefersReducedMotion && window.matchMedia('(hover: hover)').matches) {
+      heroSection.addEventListener('mousemove', (e) => {
+        const rect = heroSection.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        heroGlow.style.setProperty('--x', x + '%');
+        heroGlow.style.setProperty('--y', y + '%');
+        heroGlow.classList.add('active');
+      });
+      heroSection.addEventListener('mouseleave', () => heroGlow.classList.remove('active'));
+    }
+ 
+    // ── Magnetic buttons ──
+    if (!prefersReducedMotion && window.matchMedia('(hover: hover)').matches) {
+      document.querySelectorAll('.magnetic').forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          btn.style.transform = `translate(${x * 0.18}px, ${y * 0.35}px)`;
+        });
+        btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+      });
+    }
+ 
+    // ── Ripple click effect ──
+    document.querySelectorAll('.ripple-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const rect = btn.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const span = document.createElement('span');
+        span.className = 'ripple-span';
+        span.style.width = span.style.height = size + 'px';
+        span.style.left = (e.clientX - rect.left - size / 2) + 'px';
+        span.style.top = (e.clientY - rect.top - size / 2) + 'px';
+        btn.appendChild(span);
+        span.addEventListener('animationend', () => span.remove());
+      });
+    });
+ 
+    // ── Mobile Menu ──
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    function toggleMobileMenu() {
+      mobileMenu.classList.toggle('open');
+      const icon = hamburger.querySelector('i');
+      icon.classList.toggle('fa-bars');
+      icon.classList.toggle('fa-times');
+    }
+    hamburger.addEventListener('click', toggleMobileMenu);
+ 
+    // ── Modal ──
+    function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
+    function closeModalOutside(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+ 
+    // ── Scroll to Top ──
+    const scrollTopBtn = document.getElementById('scrollTop');
+    window.addEventListener('scroll', () => {
+      scrollTopBtn.classList.toggle('visible', window.scrollY > 500);
+    });
+ 
+    // ── Gallery Slideshow ──
+    (function() {
+      const root = document.getElementById('galleryStage');
+      const track = document.getElementById('galleryTrack');
+      const indicators = document.getElementById('galleryIndicators');
+      const currentLabel = document.getElementById('galleryCurrent');
+      const totalLabel = document.getElementById('galleryTotal');
+      const prevButton = document.getElementById('galleryPrev');
+      const nextButton = document.getElementById('galleryNext');
+
+      if (!root || !track || !indicators || !currentLabel || !totalLabel || !prevButton || !nextButton) return;
+
+      const slides = [
+        {
+          src: 'images/pool-night.jpg',
+          eyebrow: 'POOL NIGHT',
+          title: 'Evening elegance at the pool',
+          copy: 'The glow of premium lighting and intimate poolside luxury.'
+        },
+        {
+          src: 'images/lounge-interior.jpg',
+          eyebrow: 'LOUNGE INTERIOR',
+          title: 'Refined lounge atmosphere',
+          copy: 'Thoughtful textures, warm lighting, and effortless comfort.'
+        },
+        {
+          src: 'images/stage.jpg',
+          eyebrow: 'STAGE SHOWS',
+          title: 'Live entertainment every night',
+          copy: 'Elevated performances framed by a polished, cinematic setting.'
+        },
+        {
+          src: 'images/outdoor-seating.jpg',
+          eyebrow: 'OUTDOOR SEATING',
+          title: 'Chic al fresco gatherings',
+          copy: 'Cocktails and conversation under the stars in a refined setting.'
+        },
+        {
+          src: 'images/sports-court.jpg',
+          eyebrow: 'SPORTS COURT',
+          title: 'Energy, play, and premium leisure',
+          copy: 'A dynamic space for movement, competition, and vibrant evenings.'
+        },
+        {
+          src: 'images/lounge-interior2.jpg',
+          eyebrow: 'VIP LOUNGE',
+          title: 'Premium hospitality in motion',
+          copy: 'A quieter corner of elegance for special occasions and private moments.'
+        }
+      ];
+
+      const SLIDE_DURATION = 5500;
+      totalLabel.textContent = String(slides.length).padStart(2, '0');
+
+      slides.forEach((slide, index) => {
+        const slideEl = document.createElement('div');
+        slideEl.className = 'gallery-slide';
+        if (index === 0) slideEl.classList.add('active');
+        slideEl.innerHTML = `
+          <img src="${slide.src}" alt="${slide.title}" loading="lazy">
+          <div class="gallery-caption">
+            <span class="eyebrow">${slide.eyebrow}</span>
+            <h3>${slide.title}</h3>
+            <p>${slide.copy}</p>
+          </div>
+        `;
+        track.appendChild(slideEl);
+
+        const indicator = document.createElement('button');
+        indicator.type = 'button';
+        indicator.className = 'gallery-indicator';
+        indicator.setAttribute('aria-label', `Go to slide ${index + 1}`);
+        indicator.innerHTML = '<span class="fill"></span>';
+        indicator.addEventListener('click', () => goTo(index));
+        indicators.appendChild(indicator);
+      });
+
+      const slideEls = Array.from(track.querySelectorAll('.gallery-slide'));
+      const indicatorEls = Array.from(indicators.querySelectorAll('.gallery-indicator'));
+      let currentIndex = 0;
+      let autoplayId = null;
+      let touchStartX = 0;
+
+      const render = () => {
+        slideEls.forEach((slide, index) => slide.classList.toggle('active', index === currentIndex));
+        indicatorEls.forEach((indicator, index) => {
+          indicator.classList.toggle('active', index === currentIndex);
+          indicator.classList.toggle('done', index < currentIndex);
+
+          const fill = indicator.querySelector('.fill');
+          if (index === currentIndex) {
+            fill.style.animation = 'none';
+            void fill.offsetWidth;
+            fill.style.animation = `galleryFill ${SLIDE_DURATION}ms linear forwards`;
+          } else if (index < currentIndex) {
+            fill.style.animation = 'none';
+            fill.style.width = '100%';
+          } else {
+            fill.style.animation = 'none';
+            fill.style.width = '0%';
+          }
+        });
+
+        currentLabel.textContent = String(currentIndex + 1).padStart(2, '0');
+      };
+
+      const goTo = (index) => {
+        currentIndex = (index + slides.length) % slides.length;
+        render();
+        restartAutoplay();
+      };
+
+      const next = () => goTo(currentIndex + 1);
+      const previous = () => goTo(currentIndex - 1);
+
+      const startAutoplay = () => {
+        stopAutoplay();
+        autoplayId = window.setInterval(next, SLIDE_DURATION);
+      };
+
+      const stopAutoplay = () => {
+        if (autoplayId !== null) {
+          window.clearInterval(autoplayId);
+          autoplayId = null;
+        }
+      };
+
+      const restartAutoplay = () => {
+        stopAutoplay();
+        startAutoplay();
+      };
+
+      prevButton.addEventListener('click', previous);
+      nextButton.addEventListener('click', next);
+
+      root.addEventListener('mouseenter', stopAutoplay);
+      root.addEventListener('mouseleave', startAutoplay);
+
+      root.setAttribute('tabindex', '0');
+      root.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          next();
+        }
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          previous();
+        }
+      });
+
+      root.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        stopAutoplay();
+      }, { passive: true });
+
+      root.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 40) {
+          goTo(currentIndex + (dx < 0 ? 1 : -1));
+        } else {
+          restartAutoplay();
+        }
+      }, { passive: true });
+
+      render();
+      startAutoplay();
+    })();
+ 
+    // ── Toast ──
+    function showToast(msg, isError = false) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.toggle('error', isError);
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 4000);
+    }
+ 
+    // ── Menu item selection / cart ──
+    const cart = {}; // key: item name -> { name, price }
+ 
+    function formatNaira(n) {
+      return '₦' + n.toLocaleString('en-NG');
+    }
+ 
+    function toggleMenuItem(el) {
+      const name = el.dataset.name;
+      const price = parseFloat(el.dataset.price);
+      if (cart[name]) {
+        delete cart[name];
+        el.classList.remove('selected');
+      } else {
+        cart[name] = { name, price };
+        el.classList.add('selected');
+      }
+      updateCartBars();
+    }
+ 
+    function updateCartBars() {
+      const items = Object.values(cart);
+      const count = items.length;
+      const total = items.reduce((sum, i) => sum + i.price, 0);
+      ['foodModal', 'barModal'].forEach(id => {
+        const bar = document.getElementById('cartBar-' + id);
+        const countEl = document.getElementById('cartCount-' + id);
+        const totalEl = document.getElementById('cartTotal-' + id);
+        if (!bar) return;
+        bar.classList.toggle('active', count > 0);
+        if (countEl) countEl.textContent = count;
+        if (totalEl) totalEl.textContent = formatNaira(total);
+      });
+    }
+ 
+    function checkoutCart() {
+      const items = Object.values(cart);
+      if (!items.length) return;
+      const total = items.reduce((sum, i) => sum + i.price, 0);
+      const lines = items.map(i => `• ${i.name} — ${formatNaira(i.price)}`).join('\n');
+      const waNumber = '2348000000000'; // ⚠️ REPLACE with real Liga Lavida WhatsApp number
+      const msg = encodeURIComponent(
+        `Hello Liga Lavida! I'd like to order:\n\n${lines}\n\nTotal: ${formatNaira(total)}\n\nPlease confirm my order. Thank you!`
+      );
+      window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+      showToast('✅ Redirecting to WhatsApp to confirm your order!');
+    }
+ 
+    // ── Save Reservation to Genspark Table API ──
+    async function saveReservation(data) {
+      try {
+        const res = await fetch('tables/reservations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            full_name: data.full_name,
+            phone: data.phone,
+            date: data.date,
+            time: data.time,
+            guests: data.guests,
+            special_requests: data.special_requests,
+            status: 'pending'
+          })
+        });
+        if (!res.ok) console.warn('Reservation save failed (non-critical)');
+      } catch (err) {
+        console.warn('Could not save reservation to database:', err);
+      }
+    }
+ 
+    // ── Reservation Form Submit ──
+    document.getElementById('reservationForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+ 
+      const name     = document.getElementById('fname').value.trim();
+      const phone    = document.getElementById('fphone').value.trim();
+      const date     = document.getElementById('fdate').value;
+      const time     = document.getElementById('ftime').value;
+      const guests   = document.getElementById('fguests').value;
+      const requests = document.getElementById('freqs').value.trim();
+ 
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+ 
+      // Save to Genspark table (non-blocking)
+      await saveReservation({ full_name: name, phone, date, time, guests, special_requests: requests });
+ 
+      // Build WhatsApp message
+      const waNumber = '2348000000000'; // ⚠️ REPLACE with real Liga Lavida WhatsApp number
+      const msg = encodeURIComponent(
+        `Hello Liga Lavida! I'd like to make a reservation.
+ 
+👤 Name: ${name}
+📞 Phone: ${phone}
+📅 Date: ${date}
+🕐 Time: ${time}
+👥 Guests: ${guests}
+${requests ? `📝 Special Requests: ${requests}
+` : ''}
+Please confirm my reservation. Thank you!`
+      );
+ 
+      // Open WhatsApp
+      window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+ 
+      // Show toast & reset
+      showToast('✅ Redirecting to WhatsApp to confirm your reservation!');
+      this.reset();
+ 
+      btn.disabled = false;
+      btn.innerHTML = 'CONFIRM RESERVATION VIA WHATSAPP <i class="fa-brands fa-whatsapp text-xl"></i>';
+    });
+  </script>
+</body>
+</html>
