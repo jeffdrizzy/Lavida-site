@@ -658,11 +658,37 @@
     /* ══ Form field liveliness ══ */
     #reservationForm input, #reservationForm select, #reservationForm textarea {
       transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+      padding-left: 3rem;
     }
     #reservationForm input:focus, #reservationForm select:focus, #reservationForm textarea:focus {
       box-shadow: 0 0 0 3px rgba(212,175,55,0.12);
       transform: translateY(-1px);
     }
+    .form-field-wrapper {
+      position: relative;
+    }
+    .form-field-icon {
+      position: absolute;
+      left: 1.25rem;
+      top: 2.65rem;
+      color: #8b7355;
+      font-size: 1.25rem;
+      pointer-events: none;
+    }
+
+    /* ══ Reserve section background ══ */
+    #reserve {
+      background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.5)), url('images/form.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: scroll;
+    }
+    @media (min-width: 768px) {
+      #reserve {
+        background-attachment: fixed;
+      }
+    }
+
  
     /* ══ Reduced motion ══ */
     @media (prefers-reduced-motion: reduce) {
@@ -1310,7 +1336,7 @@
   </div>
  
   <!-- ═══════════ RESERVATIONS ═══════════ -->
-  <section id="reserve" class="py-28 bg-zinc-950 px-6">
+  <section id="reserve" class="py-28 px-6">
     <div class="max-w-4xl mx-auto">
       <div class="text-center mb-14 fade-in">
         <p class="text-yellow-400 text-xs tracking-[0.3em]">BOOK YOUR VISIT</p>
@@ -1345,37 +1371,42 @@
       </div>
  
       <!-- Reservation Form -->
-      <div class="bg-zinc-900 rounded-3xl p-8 md:p-12 fade-in">
+      <div class="bg-transparent rounded-3xl p-8 md:p-12 fade-in">
         <h3 class="text-3xl font-semibold text-center mb-10">Make a Reservation</h3>
         <form id="reservationForm" class="space-y-6">
           <div class="grid md:grid-cols-2 gap-6">
-            <div>
+            <div class="form-field-wrapper">
               <label class="block text-xs tracking-widest mb-2 text-gray-400">FULL NAME</label>
+              <i class="form-field-icon fa-solid fa-user"></i>
               <input id="fname" type="text" required placeholder="Your full name"
                      class="w-full bg-black border border-white/20 rounded-xl px-5 py-4 focus:outline-none focus:border-yellow-400 transition-colors text-sm">
             </div>
-            <div>
+            <div class="form-field-wrapper">
               <label class="block text-xs tracking-widest mb-2 text-gray-400">PHONE NUMBER</label>
+              <i class="form-field-icon fa-solid fa-phone"></i>
               <input id="fphone" type="tel" required placeholder="+234 000 0000 000"
                      class="w-full bg-black border border-white/20 rounded-xl px-5 py-4 focus:outline-none focus:border-yellow-400 transition-colors text-sm">
             </div>
           </div>
  
           <div class="grid md:grid-cols-2 gap-6">
-            <div>
+            <div class="form-field-wrapper">
               <label class="block text-xs tracking-widest mb-2 text-gray-400">DATE</label>
+              <i class="form-field-icon fa-solid fa-calendar"></i>
               <input id="fdate" type="date" required
                      class="w-full bg-black border border-white/20 rounded-xl px-5 py-4 focus:outline-none focus:border-yellow-400 transition-colors text-sm">
             </div>
-            <div>
+            <div class="form-field-wrapper">
               <label class="block text-xs tracking-widest mb-2 text-gray-400">TIME</label>
+              <i class="form-field-icon fa-solid fa-clock"></i>
               <input id="ftime" type="time" required
                      class="w-full bg-black border border-white/20 rounded-xl px-5 py-4 focus:outline-none focus:border-yellow-400 transition-colors text-sm">
             </div>
           </div>
  
-          <div>
+          <div class="form-field-wrapper">
             <label class="block text-xs tracking-widest mb-2 text-gray-400">NUMBER OF GUESTS</label>
+            <i class="form-field-icon fa-solid fa-users"></i>
             <select id="fguests" required
                     class="w-full bg-black border border-white/20 rounded-xl px-5 py-4 focus:outline-none focus:border-yellow-400 transition-colors text-sm">
               <option value="">Select guests</option>
@@ -1395,9 +1426,8 @@
           </div>
  
           <button type="submit" id="submitBtn"
-                  class="ripple-btn w-full bg-green-500 hover:bg-green-600 py-5 rounded-2xl text-sm tracking-widest font-semibold transition-all flex items-center justify-center gap-3">
-            <i class="fa-brands fa-whatsapp text-xl"></i>
-            CONFIRM RESERVATION VIA WHATSAPP
+                  class="ripple-btn w-full bg-green-500 hover:bg-green-600 py-5 rounded-2xl text-sm tracking-widest font-semibold transition-all flex items-center justify-center gap-3 px-6">
+            <span>CONFIRM RESERVATION</span><i class="fa-brands fa-whatsapp text-xl"></i>
           </button>
         </form>
       </div>
