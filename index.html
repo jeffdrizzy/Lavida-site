@@ -19,7 +19,8 @@
                         url('images/hero-night.jpg');
       background-size: cover;
       background-position: center;
-      background-attachment: scroll;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
     }
  
     .parallax-quote {
@@ -27,14 +28,8 @@
                         url('images/hero-night.jpg');
       background-size: cover;
       background-position: center;
-      background-attachment: scroll;
-    }
-
-    @media (min-width: 768px) {
-      .hero-bg,
-      .parallax-quote {
-        background-attachment: fixed;
-      }
+      background-attachment: fixed;
+      background-repeat: no-repeat;
     }
  
     /* Bouncing scroll indicator */
@@ -681,12 +676,8 @@
       background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.5)), url('images/form.jpg');
       background-size: cover;
       background-position: center;
-      background-attachment: scroll;
-    }
-    @media (min-width: 768px) {
-      #reserve {
-        background-attachment: fixed;
-      }
+      background-repeat: no-repeat;
+      background-attachment: fixed;
     }
 
  
@@ -828,8 +819,167 @@
       box-shadow: 0 6px 18px rgba(212,175,55,0.3);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
+    .cart-bar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.7rem;
+      justify-content: flex-end;
+      margin-left: auto;
+    }
+    .cart-bar .pay-email-input {
+      min-width: 220px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(212,175,55,0.25);
+      color: #f3e6c4;
+      border-radius: 0.7rem;
+      padding: 0.7rem 0.9rem;
+      font-size: 0.78rem;
+      outline: none;
+    }
+    .cart-bar .pay-email-input::placeholder { color: rgba(243,230,196,0.6); }
+    .cart-bar .pay-email-input:focus { border-color: rgba(212,175,55,0.7); box-shadow: 0 0 0 2px rgba(212,175,55,0.12); }
     .cart-bar button i { font-size: 1rem; color: #128C7E; }
     .cart-bar button:hover { background: linear-gradient(135deg, #f6e6ad, #d4af37); box-shadow: 0 10px 26px rgba(212,175,55,0.42); }
+    .cart-bar button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* ══ Reservation button transitions ══ */
+    #submitBtn {
+      transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
+    }
+    #submitBtn.hidden-btn {
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.95);
+    }
+    .reservation-action-buttons {
+      display: grid;
+      gap: 0.8rem;
+      grid-template-columns: 1fr;
+      animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      opacity: 0;
+    }
+    @media (min-width: 768px) {
+      .reservation-action-buttons {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .res-pay-email {
+      width: 100%;
+      background: black;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #f3e6c4;
+      border-radius: 0.9rem;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.3s ease;
+      position: relative;
+    }
+    .res-pay-email-wrapper {
+      position: relative;
+      width: 100%;
+    }
+    .res-pay-email-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(212,175,55,0.5);
+      pointer-events: none;
+      font-size: 0.95rem;
+    }
+    .res-pay-email-mock {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 0.9rem;
+      display: flex;
+      align-items: center;
+      padding-left: 2.5rem;
+      font-size: 0.875rem;
+      color: rgba(243,230,196,0.25);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      overflow: hidden;
+    }
+    .res-pay-email:focus ~ .res-pay-email-mock {
+      opacity: 1;
+    }
+    .res-pay-email:not(:placeholder-shown) ~ .res-pay-email-mock {
+      opacity: 0;
+    }
+    .res-pay-email:focus {
+      border-color: rgba(212,175,55,0.7);
+      box-shadow: 0 0 0 2px rgba(212,175,55,0.12);
+    }
+    .res-pay-email::placeholder {
+      color: rgba(243,230,196,0.6);
+    }
+
+    .res-pay-email::placeholder { color: rgba(243,230,196,0.6); }
+    #reservationWhatsAppBtn {
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.4);
+      color: #22c55e;
+      font-weight: 600;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      padding: 0.9rem 1.2rem;
+      border-radius: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    #reservationWhatsAppBtn:hover {
+      background: rgba(34,197,94,0.15);
+      border-color: #22c55e;
+      box-shadow: 0 6px 16px rgba(34,197,94,0.2);
+    }
+    #reservationPayBtn {
+      background: rgba(212,175,55,0.1);
+      border: 1px solid rgba(212,175,55,0.4);
+      color: #d4af37;
+      font-weight: 600;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      padding: 0.9rem 1.2rem;
+      border-radius: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    #reservationPayBtn:hover {
+      background: rgba(212,175,55,0.15);
+      border-color: #d4af37;
+      box-shadow: 0 6px 16px rgba(212,175,55,0.2);
+    }
   </style>
 </head>
 <body class="bg-black text-white">
@@ -1098,7 +1248,11 @@
       <p class="text-xs text-gray-500 text-center mt-4">ALL PRICES IN NIGERIAN NAIRA ₦ — Prices are subject to change. Please confirm with our team.</p>
       <div class="cart-bar" id="cartBar-foodModal">
         <div class="cart-bar-info"><strong id="cartCount-foodModal">0</strong> item(s) selected • <strong id="cartTotal-foodModal">₦0</strong></div>
-        <button type="button" onclick="checkoutCart()"><i class="fa-brands fa-whatsapp"></i> CHECKOUT VIA WHATSAPP</button>
+        <div class="cart-bar-actions">
+          <input type="email" id="payEmail-foodModal" class="pay-email-input" placeholder="Send receipt to?" autocomplete="email">
+          <button type="button" onclick="openPaystackCheckout('foodModal')"><i class="fa-solid fa-credit-card"></i> PAY NOW</button>
+          <button type="button" onclick="checkoutCart()"><i class="fa-brands fa-whatsapp"></i> CHECKOUT VIA WHATSAPP</button>
+        </div>
       </div>
       <button onclick="closeModal('foodModal')" class="mt-6 w-full border border-yellow-400 text-yellow-400 hover:bg-yellow-400/10 py-3 rounded-xl text-sm tracking-widest transition-all">CLOSE MENU</button>
       </div>
@@ -1328,7 +1482,11 @@
       <p class="text-xs text-gray-500 text-center mt-4">ALL PRICES IN NIGERIAN NAIRA ₦ — Prices are subject to change. Please confirm with our team.</p>
       <div class="cart-bar" id="cartBar-barModal">
         <div class="cart-bar-info"><strong id="cartCount-barModal">0</strong> item(s) selected • <strong id="cartTotal-barModal">₦0</strong></div>
-        <button type="button" onclick="checkoutCart()"><i class="fa-brands fa-whatsapp"></i> CHECKOUT VIA WHATSAPP</button>
+        <div class="cart-bar-actions">
+          <input type="email" id="payEmail-barModal" class="pay-email-input" placeholder="Send receipt to?" autocomplete="email">
+          <button type="button" onclick="openPaystackCheckout('barModal')"><i class="fa-solid fa-credit-card"></i> PAY NOW</button>
+          <button type="button" onclick="checkoutCart()"><i class="fa-brands fa-whatsapp"></i> CHECKOUT VIA WHATSAPP</button>
+        </div>
       </div>
       <button onclick="closeModal('barModal')" class="mt-6 w-full border border-yellow-400 text-yellow-400 hover:bg-yellow-400/10 py-3 rounded-xl text-sm tracking-widest transition-all">CLOSE MENU</button>
       </div>
@@ -1429,6 +1587,21 @@
                   class="ripple-btn w-full bg-green-500 hover:bg-green-600 py-5 rounded-2xl text-sm tracking-widest font-semibold transition-all flex items-center justify-center gap-3 px-6">
             <span>CONFIRM RESERVATION</span><i class="fa-brands fa-whatsapp text-xl"></i>
           </button>
+
+          <div id="reservationActionChoices" hidden class="reservation-action-buttons">
+            <button type="button" id="reservationWhatsAppBtn">
+              <span>WHATSAPP RESERVATION</span><i class="fa-brands fa-whatsapp text-xl"></i>
+            </button>
+            <div class="flex flex-col gap-2">
+            <div class="res-pay-email-wrapper">
+              <i class="res-pay-email-icon fa-solid fa-envelope"></i>
+              <input type="email" id="reservationPayEmail" class="res-pay-email" placeholder="Send receipt to?" autocomplete="email">
+            </div>
+              <button type="button" id="reservationPayBtn">
+                <span>PAY NOW</span><i class="fa-solid fa-credit-card text-xl"></i>
+              </button>
+            </div>
+          </div>
         </form>
       </div>
     </div>
@@ -1471,6 +1644,7 @@
   </button>
  
   <!-- ═══════════ SCRIPTS ═══════════ -->
+  <script src="https://js.paystack.co/v1/inline.js"></script>
   <script>
     const preloaderStart = Date.now();
     tailwind.config = { content: [] }
@@ -1771,9 +1945,49 @@
  
     // ── Menu item selection / cart ──
     const cart = {}; // key: item name -> { name, price }
+    const waNumber = '2348000000000'; // ⚠️ REPLACE with real Liga Lavida WhatsApp number
+    const PAYSTACK_PUBLIC_KEY = 'pk_test_3be594b642b5d26b670dd14dcf529425ef570153';
+    const RESERVATION_DEPOSIT_AMOUNT = 5000;
  
     function formatNaira(n) {
       return '₦' + n.toLocaleString('en-NG');
+    }
+ 
+    function getCartItems() {
+      return Object.values(cart);
+    }
+ 
+    function getCartTotal(items = getCartItems()) {
+      return items.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+    }
+ 
+    function buildOrderMessage(items, total, extraText = '') {
+      const lines = items.map(item => `• ${item.name} — ${formatNaira(item.price)}`).join('\n');
+      const base = `Hello Liga Lavida! I'd like to order:\n\n${lines}\n\nTotal: ${formatNaira(total)}\n\n${extraText ? `${extraText}\n\n` : ''}Please confirm my order. Thank you!`;
+      return base;
+    }
+ 
+    function openOrderWhatsApp(items, total, extraText = '') {
+      const msg = encodeURIComponent(buildOrderMessage(items, total, extraText));
+      window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+    }
+
+    function buildReservationMessage(reservation, extraText = '') {
+      const lines = [
+        `👤 Name: ${reservation.name}`,
+        `📞 Phone: ${reservation.phone}`,
+        `📅 Date: ${reservation.date}`,
+        `🕐 Time: ${reservation.time}`,
+        `👥 Guests: ${reservation.guests}`,
+        reservation.requests ? `📝 Special Requests: ${reservation.requests}` : ''
+      ].filter(Boolean);
+      const body = `Hello Liga Lavida! I would like to confirm a reservation.\n\n${lines.join('\n')}\n\n${extraText ? `${extraText}\n\n` : ''}Please confirm my reservation. Thank you!`;
+      return body;
+    }
+
+    function openReservationWhatsApp(reservation, extraText = '') {
+      const msg = encodeURIComponent(buildReservationMessage(reservation, extraText));
+      window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
     }
  
     function toggleMenuItem(el) {
@@ -1805,16 +2019,102 @@
     }
  
     function checkoutCart() {
-      const items = Object.values(cart);
+      const items = getCartItems();
       if (!items.length) return;
-      const total = items.reduce((sum, i) => sum + i.price, 0);
-      const lines = items.map(i => `• ${i.name} — ${formatNaira(i.price)}`).join('\n');
-      const waNumber = '2348000000000'; // ⚠️ REPLACE with real Liga Lavida WhatsApp number
-      const msg = encodeURIComponent(
-        `Hello Liga Lavida! I'd like to order:\n\n${lines}\n\nTotal: ${formatNaira(total)}\n\nPlease confirm my order. Thank you!`
-      );
-      window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+      const total = getCartTotal(items);
+      openOrderWhatsApp(items, total);
       showToast('✅ Redirecting to WhatsApp to confirm your order!');
+    }
+
+    function openPaystackCheckout(modalId) {
+      const items = getCartItems();
+      if (!items.length) return;
+
+      const total = getCartTotal(items);
+      const emailInput = document.getElementById(`payEmail-${modalId}`);
+      const email = emailInput ? emailInput.value.trim() : '';
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showToast('Please enter a valid email before paying.', true);
+        if (emailInput) emailInput.focus();
+        return;
+      }
+
+      if (typeof window.PaystackPop === 'undefined') {
+        showToast('Payment gateway is unavailable right now. Please try again shortly.', true);
+        return;
+      }
+
+      if (PAYSTACK_PUBLIC_KEY.includes('YOUR_PUBLIC_KEY_HERE')) {
+        showToast('Paystack is not ready yet. Replace the placeholder public key in the page code before testing payments.', true);
+        return;
+      }
+
+      const amountKobo = Math.round(total * 100);
+      const ref = 'LAVIDA_' + Date.now();
+
+      const handler = window.PaystackPop.setup({
+        key: PAYSTACK_PUBLIC_KEY,
+        email,
+        amount: amountKobo,
+        currency: 'NGN',
+        channels: ['card', 'bank_transfer', 'ussd'],
+        ref,
+        callback: function(response) {
+          const paymentRef = response.reference || ref;
+          const successText = `Payment status: Successful\nReference: ${paymentRef}\nCustomer email: ${email}`;
+          openOrderWhatsApp(items, total, successText);
+          showToast(`✅ Payment successful! Your order reference is ${paymentRef}. We'll prepare your order shortly.`);
+        },
+        onClose: function() {
+          // No action needed; the customer can try again.
+        }
+      });
+
+      handler.openIframe();
+    }
+
+    function openReservationPaystack(reservation) {
+      const emailInput = document.getElementById('reservationPayEmail');
+      const email = emailInput ? emailInput.value.trim() : '';
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showToast('Please enter a valid email before paying.', true);
+        if (emailInput) emailInput.focus();
+        return;
+      }
+
+      if (typeof window.PaystackPop === 'undefined') {
+        showToast('Payment gateway is unavailable right now. Please try again shortly.', true);
+        return;
+      }
+
+      if (PAYSTACK_PUBLIC_KEY.includes('YOUR_PUBLIC_KEY_HERE')) {
+        showToast('Paystack is not ready yet. Replace the placeholder public key in the page code before testing payments.', true);
+        return;
+      }
+
+      const amountKobo = RESERVATION_DEPOSIT_AMOUNT * 100;
+      const ref = 'LAVIDA_RES_' + Date.now();
+      const handler = window.PaystackPop.setup({
+        key: PAYSTACK_PUBLIC_KEY,
+        email,
+        amount: amountKobo,
+        currency: 'NGN',
+        channels: ['card', 'bank_transfer', 'ussd'],
+        ref,
+        callback: function(response) {
+          const paymentRef = response.reference || ref;
+          const successText = `Payment status: Successful\nReference: ${paymentRef}\nCustomer email: ${email}`;
+          openReservationWhatsApp(reservation, successText);
+          showToast(`✅ Payment successful! Your reservation reference is ${paymentRef}. We'll confirm shortly.`);
+        },
+        onClose: function() {
+          // No action needed; the customer can try again.
+        }
+      });
+
+      handler.openIframe();
     }
  
     // ── Save Reservation to Genspark Table API ──
@@ -1857,30 +2157,30 @@
       // Save to Genspark table (non-blocking)
       await saveReservation({ full_name: name, phone, date, time, guests, special_requests: requests });
  
-      // Build WhatsApp message
-      const waNumber = '2348000000000'; // ⚠️ REPLACE with real Liga Lavida WhatsApp number
-      const msg = encodeURIComponent(
-        `Hello Liga Lavida! I'd like to make a reservation.
- 
-👤 Name: ${name}
-📞 Phone: ${phone}
-📅 Date: ${date}
-🕐 Time: ${time}
-👥 Guests: ${guests}
-${requests ? `📝 Special Requests: ${requests}
-` : ''}
-Please confirm my reservation. Thank you!`
-      );
- 
-      // Open WhatsApp
-      window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
- 
-      // Show toast & reset
-      showToast('✅ Redirecting to WhatsApp to confirm your reservation!');
-      this.reset();
- 
-      btn.disabled = false;
-      btn.innerHTML = 'CONFIRM RESERVATION VIA WHATSAPP <i class="fa-brands fa-whatsapp text-xl"></i>';
+      const reservation = { name, phone, date, time, guests, requests };
+      const submitBtn = document.getElementById('submitBtn');
+      const choices = document.getElementById('reservationActionChoices');
+      const whatsAppBtn = document.getElementById('reservationWhatsAppBtn');
+      const payBtn = document.getElementById('reservationPayBtn');
+
+      // Smooth transition from button to choices
+      submitBtn.classList.add('hidden-btn');
+      setTimeout(() => {
+        choices.hidden = false;
+        choices.style.animation = 'slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
+      }, 200);
+
+      if (whatsAppBtn) {
+        whatsAppBtn.onclick = function() {
+          openReservationWhatsApp(reservation);
+          showToast('✅ Redirecting to WhatsApp to confirm your reservation!');
+        };
+      }
+      if (payBtn) {
+        payBtn.onclick = function() {
+          openReservationPaystack(reservation);
+        };
+      }
     });
   </script>
 </body>
